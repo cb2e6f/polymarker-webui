@@ -19,7 +19,7 @@ classifiers = [
   "License :: OSI Approved :: MIT License",
   "Programming Language :: Python :: 3.9",
 ]
-# dependencies = ["peppercorn"]
+dependencies = ["flask"]
 # [project.urls]
 # "Homepage" = "https://github.com/pypa/sampleproject"
 # "Bug Reports" = "https://github.com/pypa/sampleproject/issues"
@@ -28,3 +28,4 @@ classifiers = [
 # "Source" = "https://github.com/pypa/sampleproject/"
 [project.scripts]
 pmwui = "pmwui:main"
+run = "pmwui:main2"

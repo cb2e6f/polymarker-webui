@@ -28,4 +28,3 @@ dependencies = ["flask"]
 # "Source" = "https://github.com/pypa/sampleproject/"
 [project.scripts]
 pmwui = "pmwui:main"
-run = "pmwui:main2"

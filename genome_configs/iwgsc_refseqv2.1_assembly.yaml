@@ -1,0 +1,7 @@
+- name: Triticum aestivum, Chinese Spring, IWGSC v2.1
+  path: /data/References/IWGSC_v2.1/iwgsc_refseqv2.1_assembly.fa
+  genome_count: 3
+  arm_selection: nrgene
+  description: >
+    Triticum aestivum, Chinese Spring, IWGSC v2.1
+  example: >

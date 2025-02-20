@@ -1,0 +1,26 @@
+- name: Hordeum vulgare (barley)
+  path: /data/References/Hv/Hordeum_vulgare.IBSC_v2.dna.toplevel.fa
+  genome_count: 1
+  arm_selection: scaffold
+  description: >
+    The barley genome assembly presented here was produced by the 
+    [International Barley Genome Sequencing Consortium (IBSC)](http://barleygenome.org/) using a 
+    [hierarchical approach](http://europepmc.org/abstract/MED/28447635). Initially multiplexed 
+    short read BAC by BAC contig assemblies (N50: 79 kb) were scaffolded using physical, genetic 
+    and optical maps (N50: 1.9 Mb) and were assigned to chromosomes using a POPSEQ genetic map. 
+    Finally, the linear order and orientation of scaffold sequences was determined using 
+    [chromosome-conformation capture sequencing (Hi-C)](http://wikipedia.org/wiki/Chromosome_conformation_capture).
+
+    The final chromosome-scale assembly consisted of 6,347 ordered super-scaffolds composed of 
+    merged assemblies of individual BACs, representing 4.79 Gb (~95%) of the genomic sequence content, 
+    of which 4.54 Gb have beenassigned to precise chromosomal locations in the Hi-C map.
+
+    The chloroplast genome component and its gene annotation are also present ([KC912687](http://www.ebi.ac.uk/ena/data/view/JQ754651)).
+
+    The assembly and description where downloaded from [ensembl!](http://plants.ensembl.org)
+
+  example: >
+    vcZ2GHW2,chr7H,ATTGCATGATGATACGACTCCCAGATACTCGTGATCTGCGTTGGGTTTTCCATGAAGAGGAACCGCTTATCACAGAACAAAGTGGGTAAGTATTTCTCTC[A/G]GCTATGAAACTAAGGTTTATCGAATCAATAGGAATATCAACCACAATCGTCTTTAGCGGTTGCACACAAAAGAACAAACAACTTGCACACAACACGGGCA
+    vcZ2W9KA,chr5H,TTCTCCCACCTCATCGTTTAACTTCACACTGATGGTTCCACCTACCAAAATTCTCCGAATCCAATCTATCCATCGGGTGTCAAAGTTTCTTTTGCTATGA[G/T]AATCCAACAGGAATTCCCAGTTAACCTTATCATATGCTTTTTCGAAGTCAAGTTTGAGCACAATCCCTGTTTTCTTACGAACATACGTATGATGCAAAAT
+    vcZ284M0,chr4H,GCTTGAAGTCATTACACATACGGAGTGATTTGTTCTTCTTTGGCACCATCATGAAGTTGGCGAGGCACTCACAGTGGTAGACCTCGCGGATAAACTTGGC[C/T]GCTAGGAGTCGAGCGATCTCCTCGCCAATCTCCTTGCGCTTCTCAGTGGATGATCAACACAAATGCTCCCTAACGGGCTTGACTTTTAGTTCAACTCGGA
+    vcZ7H5CF,chr2H,TGTAAAGTGTGTGTGTGTGTATTTTGAGTGCTTTCTCTACGAATGAGAGGTGGTGGATGGGTATATATAGGCATCTCCTAAATCAAACCGTTACCACATT[C/T]TCACCCAACTCGGTGAAACTGAAGTAAATCTCAATGGCACCGATTTGCACAAAATGTGGCAAATTTGAAATTATTGATGAGACCGATATAGAAATTTTGG

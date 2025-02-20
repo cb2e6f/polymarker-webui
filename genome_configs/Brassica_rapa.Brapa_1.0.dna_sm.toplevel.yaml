@@ -1,0 +1,14 @@
+- name: Brassica rapa ssp. pekinensis line Chiifu 401-42
+  path: /data/References/Br/Brassica_rapa.Brapa_1.0.dna_sm.toplevel.fa
+  genome_count: 1
+  arm_selection: scaffold
+  description: >
+    The genomic sequence within this version of Ensembl includes 193 large scaffolds assembled by CAAS-IVF, 
+    which have been orientated and assigned to pseudochromosomes using publicly available genetic markers.
+    Reference sequence available in [ensembl!](http://plants.ensembl.org/Brassica_rapa/Info/Index)[fasta](ftp://ftp.ensemblgenomes.org/pub/plants/release-41/fasta/brassica_rapa/dna/).
+    The assembly is described in [The Brassica rapa Genome Sequencing Project Consortium  (2011)](https://www.nature.com/articles/ng.919)
+  example: >
+    b_rapa_test1,A08,CAAAGACGCTCCAATCCACGACACTTCCGGTGTTGTTTCCATCTCTGACGATGGAAACCTC[G/C]TGGTTACCGATGGTCGAAACCGTCTTATATGGTCGACGAACGTCACGGTACCAGTGGC
+    b_rapa_test2,A01,GTTCCTTTCTCTCCATAGATAGTAGATAACTCCTTTCCAGCATAGAAGAATCAAACGCTT[G/C]AAGAGCCTATTTCCACGAAGGGATATCATCTGATTCATCGTTTCCTCCCAGACCGGTGA
+    b_rapa_test3,A10,CTCCTTGGAATTTTCAATATTGGCCAGTTGTAAATATGCCAAAATCAGGTCCACCAAGT[T/A]CCCTAAAATTGTAAACTATTGCGCCGGAGAAGAATGTGGATTTGGAGTTTATGTAACTCT
+    b_rapa_test4,Scaffold000096,TTTCCGAGACCTGAAACTGAAAGTCACTTTCTGAATTTCGTAAACCCTAGCTTTCCAATC[T/G]CCGACGCTCTCCATCTTCTCTTGCCGCCGCCAATTCATCCTCCCGACGAGCTCAGCTTT

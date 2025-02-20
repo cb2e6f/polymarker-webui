@@ -1,0 +1,16 @@
+- name: Wheat cv Chinese Spring RefSeq v1.0 (Full sequence)
+  path: /data/References/RefSeq1.0/161010_Chinese_Spring_v1.0_pseudomolecules.fasta
+  genome_count: 3
+  arm_selection: nrgene
+  description: >
+    A whole genome assembly has been carried out by the IWGSC in collaboration with the company NRGene. 
+    Using a proprietary algorithm DeNovoMAGIC with Illumina sequencing data a 14.5 Gb assembly was produced. 
+    Sequences have been ordered using POPSEQ data and Hi-C (chromosome conformation capture) to generate 21 pseudomolecules 
+    representing the majority of the wheat genome.
+    Reference sequence available in [URGI](https://wheat-urgi.versailles.inra.fr/Seq-Repository/Annotations)
+    The assembly is described in [IWGSC (2018)](https://doi.org/10.1126/science.aar7191).
+  example: >
+    Cadenza1697.chr1A.12142209,1A,acaacttttcaaaaaataacacacccacaacctaaacacccttaaatatcaacttctgaggggaggcggcaactagtatcaaaaattcaaaatgtggttc[G/C]cacaactagcgttgccgagacaaaaagaaccagcacttccactgctccatgaattcaagaaacagaccgatggcatgtataagaacagacgtgccga
+    BA00591935,3B,gcacatcggagagttcgttggaagagcctagcaccgaggaattccaggaggaagatgtctctgatggagattcagactcgaacgacgagagcaaggggcc[G/A]gaagtaaagcttttcatcagcggagtagttcataataaagaggaggctggagcaaaatcttatgttcgagttcccgctgaaataaataacctggaaaggg
+    BA00343846,5A,ccacccctcctcttccccatgcagctacaactgaggcaatgctgccgtctgccttctggagttccccgccttcgatctcgagcacgccatccaggacggc[G/A]ttggtatcgaccgccaacctcaatctggatccggttgtggctaatgtacagactaattcccacacaaaacattcattaagttagcattgtctctttttgg
+    BA00122841,7D,ttcccaccacacgcttcagcagttccttggctcgcgatgaccccgactcatcatggcagaactgggtccggaggcccccatcaagacccttgtaaatgta[A/G]aagtacactgccagttgttcgctgccgctgttggtggcatggatgagaaggccaaaggggccaagcgcgccgcgttcagtggcaccaccacttgtactgc

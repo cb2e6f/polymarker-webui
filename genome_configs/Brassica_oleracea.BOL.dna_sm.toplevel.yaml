@@ -1,0 +1,15 @@
+- name: Brassica oleracea kale-like type TO1000DH
+  path: /data/References/Bo/Brassica_oleracea.BOL.dna_sm.toplevel.fa
+  genome_count: 1
+  arm_selection: scaffold
+  description: >
+    The genomic sequence within this version of Ensembl includes 33,459 scaffolds (>200 bp) with an N50 of 850 kb that was assembled 
+    at NRC-Saskatoon using a hybrid approach from Illumina, Roche 454 and Sanger sequence data. 
+    The assembly has been orientated and assigned to the nine pseudochromosomes using dense genotype-by-sequencing genetic maps.
+    Reference sequence available in [ensembl!](http://plants.ensembl.org/Brassica_oleracea/Info/Index)[fasta](ftp://ftp.ensemblgenomes.org/pub/plants/release-41/fasta/brassica_oleracea/dna/).
+    The assembly is described in [Parkin, I. et al (2014)](https://doi.org/10.1186/gb-2014-15-6-r77)
+  example: >
+    b_oleracea_test1,C4,AGAATCACAGAACAAGCTGGTGTTGTCCTAACACTTGATCCCAAACCGATTGAGGGTGACT[G/C]GAACGGTGCTGGTTGCCATACCAATTACAGCACAAAGAGCATGAGAGAGGACGGAGGA
+    b_oleracea_test2,C8,CGCCGGAAAACAAACCCTGCTCCCGGCCACGGCCTCGCCTTCATCGTGGTCCCTACCATT[A/T]ACAACGACGGCGCCGCCGGAAAAGGCTTCATCGGTCTGTTAAACCAAACCAATAAGGGA
+    b_oleracea_test3,C9,ATGGCACCACGAGGCCTTTTTTATATTTCTTATACAAACAGTAGTTCATTTAAG[A/G]TTTAGTTTTCTTCTATAAACTAGTTTATCCGATACAAAAACTGACAACTTTCAGCCTGTGTTGTT
+    b_oleracea_test4,Scaffold01088,ATCATGTTCAGGTTCTGTAGTCAACATGAGGAAAAATGGCTTCCCTCCCAACATTC[T/G]CAGATGCTTTTGTCATGTTCATTCAACTAAGACTATGAACATGGTGGCAAAAATTCAACATCC

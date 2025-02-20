@@ -1,0 +1,7 @@
+- name: Triticum aestivum, Fielder, 201216
+  path: /data/References/Fielder/201216_Fielder_pseudomolecules_V1+unanchored_contigs.fasta
+  genome_count: 3
+  arm_selection: nrgene
+  description: >
+    Triticum aestivum, Fielder, 201216
+  example: >

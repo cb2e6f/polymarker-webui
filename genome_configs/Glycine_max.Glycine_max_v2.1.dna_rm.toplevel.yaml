@@ -1,0 +1,14 @@
+- name: Glycine max var. Williams 82
+  path: /data/References/Gm/Glycine_max.Glycine_max_v2.1.dna_rm.toplevel.fa
+  genome_count: 1
+  arm_selection: scaffold
+  description: >
+    Glycine max var. Williams 82 was sequenced, assembled, and annotated by the U.S. DOE Joint Genome Institute (JGI-PGF) 
+    in collaboration with a consortium of research labs and published. Current assembly is version v2.1 and comprises a total 978 Mb
+    The reference sequence is available in [Ensembl plants Relase 50](ftp://ftp.ensemblgenomes.org/pub/plants/release-50/fasta/glycine_max/dna/). 
+    The version of the assembly used has the repeats masked (Glycine_max.Glycine_max_v2.1.dna_rm.toplevel.fa).
+  example: >
+    Test_marker_1,1,GAGGAGCTCGTGACGCTAGTGTCGGAGATTATCAGCGCCGGCACGGACACAAGCGCCACC[G/T]CGCTGGAGTGGGCGCTGCTTCATTTGGTTATGGATCAAGAGATTCAAGAGAGGCTGTAC
+    Test_marker_2,2,ATCTGCAATCCACTGAGTTTGTATATCTTGGATGCGGACCAAATGGCCAATTCTTCAATA[T/A]CGAGTCCCTATTGAAGTTCATTCTGTGTAGTTTCTTCTTTTTGTTTACCACTTCTCTGC
+    Test_marker_3,18,TCACCCTAGAATTTAGGATTTGTGAAAAAATTGCTCTACATTTGTCAAGGATAACATGCA[C/A]GTTAGCTACACCATTTGCAACATGATTAAAAGCCTCTACCACAGTCTGTCAGTCACTTT
+    Test_marker_4,KZ848236,AATTTATCTCTGCCTTGGGTTGTTCAATATTACTTCCACTTCAACAAACCAATCAGTTAT[C/T]TTCCTGCCAGTGTAGGAATAGTGAGTTTCAATCTAATTTTTGCATTTGCGGCTTCTATGG

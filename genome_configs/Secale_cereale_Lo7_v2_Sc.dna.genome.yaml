@@ -1,0 +1,15 @@
+- name: Rye (Secale cereale L.) inbred line Lo7 v2
+  path: /data/References/Rye/Secale_cereale_Lo7_v2_Sc.dna.genome.fa
+  genome_count: 1
+  arm_selection: first_two
+  description: >
+    The scaffolds  were constructed using the Whole Genome Shotgun (WGS) assembly of Lo7. 
+    To link WGS contigs the scaffolding software SSPACE (version 2.3) was used. 
+    The assmebly contains 1.29 million scaffolds with a cumulative length of 2.8 Gbp.
+    Reference sequence available from [IPK](https://doi.org/10.5447/IPK/2016/56).
+    The assembly is described in [Bauer, E. et al (2014)](https://doi.org/10.1111/tpj.13436)
+  example: >
+    rye_test1,Lo,ATGGCTGCAAGATGAATGTTCCCCAAACCCCATATGCTGTAACAGCTGAATTGCACGTAC[A/T]GTCTATATCAGGGTCAGCTCCTGGCCCTAGAGAATCCTGAATTGCAACAGCACATTGGT
+    rye_test2,Lo,CCTTCTCCAGTATGCCTCGGGCCTCCTTTTATAGGTCAAAGGGGTCGCCACAGTGGCATA[C/G]AGGAGGTGAAAAGTATCTACAGTGTTTGAGTTTATCCTCTGACATCATAGGACAAACGC
+    rye_test3,Lo,TTCGTCACTATCGGCAAGTTTACAAAGTGGCCTGAGGTAGAGCCAGTGAAAAACGTGACC[G/A]CGCAATCAGCTATCAAGTTCTTCAAGGGACTGGTCTGTCATTTCGGAGTACCCAAAGGG
+    rye_test4,Lo,GCTCCTCCTCAGCGCTGAACTCCGCCACGAGCAGCAGGCCACCGTCGGCGAGATCCACTC[C/T]TCGGCCAACACAGCCACCCGCAATTCTGATGGTCGCAGTGCTGGCCGTGGCAACCAGGG

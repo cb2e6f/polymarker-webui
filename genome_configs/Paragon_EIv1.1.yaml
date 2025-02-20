@@ -1,0 +1,16 @@
+- name: Triticum aestivum (cv. Paragon)
+  path: /data/References/Ta/Paragon_EIv1.1.fa
+  genome_count: 3
+  arm_selection: scaffold
+  description: >
+    The assembly is done with the pipeline described in  Clavijo, Venturini et al. 2017 10.1101/gr.217117.116 , filtering non-wheat sequences
+    and scaffolds below 1 kbp. The assembly is available in the [grassroots portal](https://opendata.earlham.ac.uk/wheat/under_license/toronto/Clavijo_2017-04-25_Wheat-LoLa/)
+    This assembly is part of a BBSRC strategic longer and larger (sLoLa) grant award between Earlham Institute (EI), John Innes Centre (JIC), European Bioinformatics Institute (EBI) and Rothamsted Research (RRes).
+    To find the scaffold where your markers are, you can blast the sequence [here](https://wheatis.tgac.ac.uk/grassroots-portal/blast).
+  example: >
+    BA00894563,Triticum_aestivum_Paragon_EIv1.1_scaffold_049530,TGGCAATCGTGCATCCGAAGCTCCGCGGCCCGGCACCATGCCTTCCTCTC[C/T]GTCTCGCTCGCCCGACGCTTGGAGCGTCTGCTCGTCGTCGGCTCTCACCA
+    BA00155703,Triticum_aestivum_Paragon_EIv1.1_scaffold_029723,TTGGAACTGTGCGAGGTCTCTTCATCTTTGGAAGCTCTGCTCTGTTTTTC[C/T]TTCTTTCTCTAGCATTTGATTCCTGCGTATTCATTCGTGTAATGCCGACA
+    BA00332629,Triticum_aestivum_Paragon_EIv1.1_scaffold_025636,CATGGTGACGGAGTTGAGGAGGCATTCTACACGACAGACAGGGTTATGAC[A/G]GTCTCATTCCACAAGTTTGGGGATTATTTCCCAGGTACAGGGGATGTCCG
+    BA00403950,Triticum_aestivum_Paragon_EIv1.1_scaffold_078673,AGCATTAGCCACAAAAGTGAAGCATCAGGATGTAAGTGAAATGCACTCTT[A/T]TAAACCCCCCAATGTATAAGCCATAAGGACGTGTGAGAAGAGCATGAAAG
+    BA00164837,Triticum_aestivum_Paragon_EIv1.1_scaffold_021431,TTCATCCCTGAAGTGGCGTGGCTAGACCTGCAGGGAGTGAGGAGACGTAT[C/T]GAGGGCTTGTTTCAGCGGTTGCATGCCATGATGGACGAACACATCGAGCT
+    BA00879177,Triticum_aestivum_Paragon_EIv1.1_scaffold_050412,ATCATGGAAGAAAAGCTACGGTTGGCACAGGAAGAGGCTGCCAGACTGAA[C/T]TTTGAGTCGGATGAGTTGGCAGCAGCCTCAAAAGAGAAAGAGAGAGGACT

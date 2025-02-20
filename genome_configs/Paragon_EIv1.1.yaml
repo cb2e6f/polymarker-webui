@@ -1,5 +1,5 @@
 - name: Triticum aestivum (cv. Paragon)
-  path: /data/References/Ta/Paragon_EIv1.1.fa
+  path: /mnt/hdd/rellis/pm_reference_genomes/Paragon_EIv1.1/Paragon_EIv1.1.fa
   genome_count: 3
   arm_selection: scaffold
   description: >

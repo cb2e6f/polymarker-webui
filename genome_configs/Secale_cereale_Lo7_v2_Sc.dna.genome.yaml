@@ -1,5 +1,5 @@
 - name: Rye (Secale cereale L.) inbred line Lo7 v2
-  path: /data/References/Rye/Secale_cereale_Lo7_v2_Sc.dna.genome.fa
+  path: /mnt/hdd/rellis/pm_reference_genomes/Secale_cereale_Lo7_v2_Sc.dna.genome/Secale_cereale_Lo7_v2_Sc.dna.genome.fa
   genome_count: 1
   arm_selection: first_two
   description: >

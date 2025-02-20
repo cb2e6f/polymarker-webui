@@ -1,5 +1,5 @@
 - name: Triticum aestivum (cv. Claire)
-  path: /data/References/Ta/Claire_EIv1.1.fa
+  path: /mnt/hdd/rellis/pm_reference_genomes/Claire_EIv1.1/Claire_EIv1.1.fa
   genome_count: 3
   arm_selection: scaffold
   description: >

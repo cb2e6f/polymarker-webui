@@ -1,5 +1,5 @@
 - name: Hordeum vulgare (barley)
-  path: /data/References/Hv/Hordeum_vulgare.IBSC_v2.dna.toplevel.fa
+  path: /mnt/hdd/rellis/pm_reference_genomes/Hordeum_vulgare.IBSC_v2.dna.toplevel/Hordeum_vulgare.IBSC_v2.dna.toplevel.fa
   genome_count: 1
   arm_selection: scaffold
   description: >

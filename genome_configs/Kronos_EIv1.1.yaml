@@ -1,5 +1,5 @@
 - name: Triticum turgidum (cv. Kronos)
-  path: /data/References/Td/Kronos_EIv1.1.fa
+  path: /mnt/hdd/rellis/pm_reference_genomes/Kronos_EIv1.1/Kronos_EIv1.1.fa
   genome_count: 2
   arm_selection: scaffold
   description: >

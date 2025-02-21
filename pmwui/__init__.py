@@ -51,7 +51,7 @@ def connect():
             password="",
             host="localhost",
             port=3306,
-            database="cmd_queue_db"
+            database="polymarker_webui"
         )
         return connection
     except mariadb.Error as e:
@@ -110,12 +110,13 @@ def add(path):
             reference_data = yaml.safe_load(reference_data_file)
             print("-------")
             try:
-                index(reference_data[0]["path"])
-                db_connection = connect()
+                for ref in reference_data:
+                    index(ref["path"])
+                    db_connection = connect()
 
-                if db_connection is not None:
-                    create_reference_table(db_connection)
-                    insert_reference(db_connection, reference_data[0])
+                    if db_connection is not None:
+                        create_reference_table(db_connection)
+                        insert_reference(db_connection, ref)
             except KeyError:
                 print(f"missing path value from reference yaml")
                 exit(-1)
@@ -131,8 +132,9 @@ def add(path):
 def main():
     if len(sys.argv) > 1:
         if sys.argv[1] == "add":
-            if len(sys.argv) == 3:
-                add(sys.argv[2])
+            if len(sys.argv) >= 3:
+                for conf in sys.argv[2:]:
+                    add(conf)
             else:
                 print("invalid options")
             exit(0)

@@ -295,8 +295,8 @@ def index():
 
         print(os.listdir("."))
 
-        os.rename(f"static/data/{id}_out/exons_genes_and_contigs.fa",
-                  f"static/data/{id}_out/exons_genes_and_contigs.fa.og")
+        # os.rename(f"static/data/{id}_out/exons_genes_and_contigs.fa",
+        #           f"static/data/{id}_out/exons_genes_and_contigs.fa.og")
 
         # post_process_masks(f"static/data/{id}_out/exons_genes_and_contigs.fa.og", f"static/data/{id}_out/exons_genes_and_contigs.fa")
 

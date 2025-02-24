@@ -1,0 +1,195 @@
+/*
+ * This is a manifest file that'll be compiled into application.css, which will include all the files
+ * listed below.
+ *
+ * Any CSS and SCSS file within this directory, lib/assets/stylesheets, or any plugin's
+ * vendor/assets/stylesheets directory can be referenced here using a relative path.
+ *
+ * You're free to add application-wide styles to this file and they'll appear at the bottom of the
+ * compiled file so the styles you add here take precedence over styles defined in any other CSS/SCSS
+ * files in this directory. Styles in this file should be added after the last require_* statement.
+ * It is generally better to create a new file per style scope.
+ *
+ *= require_tree .
+ *= require_self
+ */
+
+@import "bootstrap";
+
+body{
+	background-color: #E6E6E6;
+}
+
+
+// Header Styling
+#header{
+	background-color: white;
+	border-radius: 25px;
+	padding: 15px;
+	margin-bottom: 5px;
+}
+
+
+// Logo Styling
+.logo_image{
+	width: 20%;		
+	display: inline-block;	
+}
+
+
+// Navigation Styling
+.navbar{
+	padding: 0px !important;
+	display: initial;
+}
+
+nav a{
+	display: inline-block;	
+	color: #337ab7 !important;
+	padding: 10px 0;
+	text-align: center;
+	margin: 0px 0px 0px -4px;
+	width: calc(75%/4);
+	border-radius: 10px;
+}
+
+nav a:hover{
+	background-color: #E6E6E6 !important;	
+	-webkit-transition: background-color 200ms linear;
+    -ms-transition: background-color 200ms linear;
+    transition: background-color 200ms linear;    
+    text-decoration: underline;
+}
+
+input, select, button{
+	color: black ;
+	border-radius: 7px !important;
+	cursor: pointer !important;
+	padding: 5px 8px !important;
+	box-shadow: 2px 2px 3px grey !important;
+	border: none;
+}
+
+// Color specific for select 
+select{
+	background-color: #489e47;	
+	color: white !important;
+}
+
+input[type=submit]{
+	background-color: #337ab7 !important;	
+	color: white !important;
+	border-radius: 7px !important;
+	cursor: pointer !important;
+	padding: 5px 8px !important;
+	box-shadow: 2px 2px 3px grey !important;
+	border: none;
+}
+
+#populateExample{
+	color: black !important;
+	border-radius: 7px !important;
+	cursor: pointer !important;
+	padding: 5px 8px !important;
+	box-shadow: 2px 2px 3px grey !important;
+	border: none;
+}
+
+#clearInput{
+	background-color: #af9dd1;
+}
+
+#manualInput{
+	height: 200px;
+	font-size: smaller;
+}
+
+.refSelectContainer{
+	display: inline-block;	
+	vertical-align: top;
+	float: right;
+	width: 50%
+}
+
+.emailContainer{
+	width: 30%;
+	display: inline-block;
+}
+
+.refDesContainer{
+	display: inline-block;		
+}
+
+// Content Styling
+#main-body{
+	background-color: white;
+	border-radius: 25px;
+	padding: 15px;
+	margin-bottom: 80px;		// footer height + 5
+}
+
+.button-link-style{
+	color: #337ab7 !important;
+	border: none !important;
+	box-shadow: none !important;
+	background-color: white !important;
+}
+
+// Footer Styling
+div.footer{
+  background-color:  #FFFFFF;
+  border-radius: 25px;   
+  max-height: 75px; 
+  position: fixed;
+  right: 0;
+  bottom: 0;
+  left: 0;
+}
+
+img.logo{
+    height: 75px;    
+    padding:10px 0;    
+    box-sizing: border-box;
+}
+
+
+// Alert Stylings ****************************************
+.alert{
+    position: fixed;    
+    top: 200px;
+    left: 0;
+    right: 0;
+    margin: 0 auto;
+    cursor:pointer;
+    width:500px;            
+    text-align: left;
+    padding: 35px;   
+    border:1px solid #E77D7B;
+    overflow:auto;
+}
+.alert p{
+	margin: 0;
+	display: inline;
+	padding-right: 30px;
+}
+
+.error{
+	background: #FFE7E7;
+}
+.error p{	
+	background: #FFE7E7 url('../images/exclamation.png') right no-repeat;	
+}
+
+
+.notice{
+	background: #E7F3FF;
+}
+.notice p{
+	background: #E7F3FF url('../images/information.png') right no-repeat;
+}
+
+
+// Customizing Bootstrap Stylings ****************************************
+.container-fluid{
+    padding: 0;
+}

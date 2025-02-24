@@ -1,11 +1,26 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <title>webui</title>
+    <title>PolyMarker - webui</title>
+
+    <link rel="stylesheet" href="/static/style.css"/>
 </head>
 <body>
 
-<form method="POST" , enctype="multipart/form-data">
+
+<div id="header">
+    <a href="/" onclick="runOnPageChange()"><img class="logo_image"
+                                                 src="/static/pm_logo.png"/></a>
+
+    <nav class="navbar">
+        <a onclick="runOnPageChange()" href="/">Create Primers</a>
+        <a onclick="runOnPageChange()" href="/designed_primers">Primers for wheat SNP-Chips</a>
+        <a onclick="runOnPageChange()" href="/about">About</a>
+        <a onclick="runOnPageChange()" href="/cite">Cite</a>
+    </nav>
+</div>
+
+<form class="new_snp_file" method="POST" , enctype="multipart/form-data">
     <label for="reference">reference:</label>
     <select name="reference" id="reference">
         {% for reference in references %}
@@ -16,8 +31,9 @@
     <br><br>
 
     <label for="text">text:</label>
-    <textarea name="text"></textarea>
-
+    <div id="manInputCont">
+        <textarea  class="form-control" id="manualInput"   name="text"></textarea>
+    </div>
     <br><br>
 
     <label for="file">file:</label>
@@ -35,87 +51,7 @@
 
 <br>
 
-</body>
-</html>
 
-
-<!DOCTYPE html>
-<html>
-<head>
-    <title>PolyMarker</title>
-
-
-    <link rel="stylesheet" media="all"
-          href="/assets/global.self-e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855.css?body=1"
-          data-turbolinks-track="reload"/>
-    <link rel="stylesheet" media="all"
-          href="/assets/jsgrid.self-856a4cc4f01b89070352011686d00579094b87470b858d092a69af252a0b2939.css?body=1"
-          data-turbolinks-track="reload"/>
-    <link rel="stylesheet" media="all"
-          href="/assets/msa.self-faf6a0529fd04e6b439f675b07cf5b8b208268e0e8fdafcaa82c063c841cee98.css?body=1"
-          data-turbolinks-track="reload"/>
-    <link rel="stylesheet" media="all"
-          href="/assets/reference.self-e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855.css?body=1"
-          data-turbolinks-track="reload"/>
-    <link rel="stylesheet" media="all"
-          href="/assets/snp_files.self-1ab15d92fd582ce3cb5f24c442b53bb7eb0ad32075e2cebf57cba03ff6f053f6.css?body=1"
-          data-turbolinks-track="reload"/>
-    <link rel="stylesheet" media="all"
-          href="/assets/status.self-e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855.css?body=1"
-          data-turbolinks-track="reload"/>
-    <link rel="stylesheet" media="all"
-          href="/assets/theme.self-d95c9f909da0b9f117f3da3dfbbcd2f70a595b821328e4394ef66c3b13011d27.css?body=1"
-          data-turbolinks-track="reload"/>
-    <link rel="stylesheet" media="all"
-          href="/assets/w2ui.self-e8142cdb0caefd421845bcf63740a29aa56245aedb82b5d0354db9ab8d379b63.css?body=1"
-          data-turbolinks-track="reload"/>
-    <link rel="stylesheet" media="all"
-          href="/assets/application.self-3959b9c51bdf7b353dfa0d6749c37796178be4875f2edc282f7290758bd92cad.css?body=1"
-          data-turbolinks-track="reload"/>
-    <script src="/assets/jquery/dist/jquery.self-5af507e253c37e9c9dcf65064fc3f93795e6e28012780579975a4d709f4074ad.js?body=1"
-            data-turbolinks-track="reload"></script>
-    <script src="/assets/rails-ujs.self-3b600681e552d8090230990c0a2e8537aff48159bea540d275a620d272ba33a0.js?body=1"
-            data-turbolinks-track="reload"></script>
-    <script src="/assets/turbolinks.self-569ee74eaa15c1e2019317ff770b8769b1ec033a0f572a485f64c82ddc8f989e.js?body=1"
-            data-turbolinks-track="reload"></script>
-    <script src="/assets/action_cable.self-69fddfcddf4fdef9828648f9330d6ce108b93b82b0b8d3affffc59a114853451.js?body=1"
-            data-turbolinks-track="reload"></script>
-    <script src="/assets/cable.self-8484513823f404ed0c0f039f75243bfdede7af7919dda65f2e66391252443ce9.js?body=1"
-            data-turbolinks-track="reload"></script>
-    <script src="/assets/reference.self-877aef30ae1b040ab8a3aba4e3e309a11d7f2612f44dde450b5c157aa5f95c05.js?body=1"
-            data-turbolinks-track="reload"></script>
-    <script src="/assets/snp_file.self-b1dde499bbe0a3f7e034628c623b1c1dee171effe7e14fd4b9e0cda6d94997a4.js?body=1"
-            data-turbolinks-track="reload"></script>
-    <script src="/assets/snp_files.self-877aef30ae1b040ab8a3aba4e3e309a11d7f2612f44dde450b5c157aa5f95c05.js?body=1"
-            data-turbolinks-track="reload"></script>
-    <script src="/assets/status.self-877aef30ae1b040ab8a3aba4e3e309a11d7f2612f44dde450b5c157aa5f95c05.js?body=1"
-            data-turbolinks-track="reload"></script>
-    <script src="/assets/application.self-48e310ec26832887a00f4f1c9a8c7c5ec57e2ba7c5b877b2c5968f93e0445b55.js?body=1"
-            data-turbolinks-track="reload"></script>
-
-    <script src="/packs/js/application-95ca484a9d266310e628.js"></script>
-</head>
-
-<body class="container-fluid">
-
-<!-- Header -->
-<div id="header">
-    <!-- Logo -->
-    <a href="/" onclick="runOnPageChange()"><img class="logo_image"
-                                                 src="/static/pm_logo.png"/></a>
-
-    <!-- Navigation -->
-    <nav class="navbar">
-        <a onclick="runOnPageChange()" href="/">Create Primers</a>
-        <a onclick="runOnPageChange()" href="/designed_primers">Primers for wheat SNP-Chips</a>
-        <a onclick="runOnPageChange()" href="/about">About</a>
-        <a onclick="runOnPageChange()" href="/cite">Cite</a>
-    </nav>
-</div>
-
-<!-- Error messages -->
-
-<!-- Content -->
 <div id="main-body">
     <div id="content">
         <p>
@@ -426,11 +362,13 @@ The assembly and description where downloaded from [ensembl!](http://plants.ense
 
 <!-- Footer -->
 <div class="footer">
-    <img class="logo" src="/assets/jic-50e00d9b8e94eff1d9bcdab148524a0118b2cf4d980e24b9a9285eac19928ba9.png"/>
-    <img class="logo" src="/assets/bbsrc-78cb6a1870bbe0b81f8885f7136a85998a5a1d4e055d0cf3b5311838ba0dba11.png"/>
-    <img class="logo" src="/assets/iwyp-5f29e83554a9ca31addec57587ca00d6d9c14f12d242c596f731076d48fbfaed.png"/>
-    <img class="logo" src="/assets/DFW-39bb36e2c93b9e54d0b4eea2848651cfd4ef436928b838b8002003bb6bffe4b2.jpg"/>
+    <img class="logo" src="/static/images/jic.png"/>
+    <img class="logo" src="/static/images/bbsrc.png"/>
+    <img class="logo" src="/static/images/iwyp.png"/>
+    <img class="logo" src="/static/images/DFW.jpg"/>
 </div>
 
 </body>
 </html>
+
+

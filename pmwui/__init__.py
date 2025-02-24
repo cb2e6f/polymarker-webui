@@ -5,7 +5,6 @@ import mariadb
 import yaml
 from flask import Flask, jsonify, request
 
-
 import os
 import subprocess
 import uuid
@@ -15,7 +14,6 @@ from flask import Flask, flash, request, redirect, jsonify, render_template
 from werkzeug.utils import secure_filename
 
 # from post_process_masks import post_process_masks
-
 
 
 # UPLOAD_FOLDER = '/usr/users/JIC_a5/goz24vof/uploads'
@@ -32,7 +30,6 @@ def allowed_file(filename):
         filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
 
-
 def get_references():
     connection = connect()
     cursor = connection.cursor()
@@ -40,6 +37,7 @@ def get_references():
     references = cursor.fetchall()
     connection.close()
     return references
+
 
 # # Define a route for the home page
 # @app.route('/')
@@ -51,6 +49,7 @@ def get_references():
 @app.route('/greet/<name>')
 def greet(name):
     return f'Hello, {name}!'
+
 
 def index(path):
     print(f"path ===== {path}")
@@ -132,10 +131,7 @@ def insert_reference(connection, config):
         print(f"error inserting reference: {e}")
 
 
-
-
 def add(path):
-
     try:
         reference_data_file = open(path)
         try:
@@ -162,12 +158,7 @@ def add(path):
         exit(-1)
 
 
-
-
 ########################################################################
-
-
-
 
 
 def allowed_file(filename):
@@ -197,6 +188,7 @@ def get_reference_from_name(name):
     reference = cursor.fetchone()
     connection.close()
     return reference
+
 
 def get_referece_cmd_data(id):
     connection = connect()
@@ -250,6 +242,35 @@ def ref():
     return render_template('ref.html', references=references, message=message)
 
 
+
+
+def post_process_masks(src, des):
+    src_file = open(src, 'r')
+    des_file = open(des, 'w')
+
+    mask = False
+    skip = False
+
+    for line in src_file:
+        if skip and line.startswith(">"):
+            skip = False
+
+        if mask and line.startswith(">"):
+            skip = True
+            mask = False
+            continue
+
+        if line.startswith(">MASK"):
+            mask = True
+
+        if skip:
+            continue
+
+        des_file.write(line)
+
+    des_file.close()
+    src_file.close()
+
 @app.route('/', methods=['GET', 'POST'])
 def index():
     if request.method == 'POST':
@@ -289,20 +310,24 @@ def index():
         ref_genome_count = ref_data[1]
         ref_arm_selection = ref_data[2]
 
-        command = f"polymarker.rb -m {os.path.join(app.config['UPLOAD_FOLDER'], filename)} -o static/data/{id}_out -c {ref_path} -g {ref_genome_count} -a {ref_arm_selection} -A blast"
+        command = f"polymarker.rb -m {os.path.join(app.config['UPLOAD_FOLDER'], filename)} -o {app.static_folder}/data/{id}_out -c {ref_path} -g {ref_genome_count} -a {ref_arm_selection} -A blast"
         print(command)
         result = subprocess.run(command, shell=True)
 
-        print(os.listdir("."))
+        print("_____________")
+        print(app.static_folder)
+        print("_____________")
 
-        # os.rename(f"static/data/{id}_out/exons_genes_and_contigs.fa",
-        #           f"static/data/{id}_out/exons_genes_and_contigs.fa.og")
+        print(os.listdir(app.static_folder))
 
-        # post_process_masks(f"static/data/{id}_out/exons_genes_and_contigs.fa.og", f"static/data/{id}_out/exons_genes_and_contigs.fa")
+        os.rename(f"{app.static_folder}/data/{id}_out/exons_genes_and_contigs.fa",
+                  f"{app.static_folder}/data/{id}_out/exons_genes_and_contigs.fa.og")
+
+        post_process_masks(f"{app.static_folder}/data/{id}_out/exons_genes_and_contigs.fa.og",
+                           f"{app.static_folder}/data/{id}_out/exons_genes_and_contigs.fa")
 
         print(f"result: {result}")
         return render_template('result.html', id=id)
-
 
     references = get_references()
     return render_template('index.html', references=references)

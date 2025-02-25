@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+
+
+    <link rel="stylesheet" media="all" href="static/global.self-e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934c.css"
+          data-turbolinks-track="reload">
+    <link rel="stylesheet" media="all" href="static/jsgrid.self-856a4cc4f01b89070352011686d00579094b87470b858d09.css"
+          data-turbolinks-track="reload">
+    <link rel="stylesheet" media="all" href="static/msa.self-faf6a0529fd04e6b439f675b07cf5b8b208268e0e8fdafcaa82.css"
+          data-turbolinks-track="reload">
+    <link rel="stylesheet" media="all" href="static/reference.self-e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b9.css"
+          data-turbolinks-track="reload">
+    <link rel="stylesheet" media="all" href="static/snp_files.self-1ab15d92fd582ce3cb5f24c442b53bb7eb0ad32075e2c.css"
+          data-turbolinks-track="reload">
+    <link rel="stylesheet" media="all" href="static/status.self-e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934c.css"
+          data-turbolinks-track="reload">
+    <link rel="stylesheet" media="all" href="static/theme.self-d95c9f909da0b9f117f3da3dfbbcd2f70a595b821328e4394.css"
+          data-turbolinks-track="reload">
+    <link rel="stylesheet" media="all" href="static/w2ui.self-e8142cdb0caefd421845bcf63740a29aa56245aedb82b5d035.css"
+          data-turbolinks-track="reload">
+    <link rel="stylesheet" media="all" href="static/application.self-3959b9c51bdf7b353dfa0d6749c37796178be4875f2.css"
+          data-turbolinks-track="reload">
+    <script src="static/jquery.self-5af507e253c37e9c9dcf65064fc3f93795e6e280127805799.js"
+            data-turbolinks-track="reload"></script>
+    <script src="static/rails-ujs.self-3b600681e552d8090230990c0a2e8537aff48159bea540.js"
+            data-turbolinks-track="reload"></script>
+    <script src="static/turbolinks.self-569ee74eaa15c1e2019317ff770b8769b1ec033a0f572.js"
+            data-turbolinks-track="reload"></script>
+    <script src="static/action_cable.self-69fddfcddf4fdef9828648f9330d6ce108b93b82b0b.js"
+            data-turbolinks-track="reload"></script>
+    <script src="static/cable.self-8484513823f404ed0c0f039f75243bfdede7af7919dda65f2e.js"
+            data-turbolinks-track="reload"></script>
+    <script src="static/reference.self-877aef30ae1b040ab8a3aba4e3e309a11d7f2612f44dde.js"
+            data-turbolinks-track="reload"></script>
+    <script src="static/snp_file.self-b1dde499bbe0a3f7e034628c623b1c1dee171effe7e14fd.js"
+            data-turbolinks-track="reload"></script>
+    <script src="static/snp_files.self-877aef30ae1b040ab8a3aba4e3e309a11d7f2612f44dde.js"
+            data-turbolinks-track="reload"></script>
+    <script src="static/status.self-877aef30ae1b040ab8a3aba4e3e309a11d7f2612f44dde450.js"
+            data-turbolinks-track="reload"></script>
+    <script src="static/application.self-48e310ec26832887a00f4f1c9a8c7c5ec57e2ba7c5b8.js"
+            data-turbolinks-track="reload"></script>
+
+    <script src="static/application-95ca484a9d266310e628.js"></script>
+    <title>PolyMarker</title>
+    <meta name="csrf-param" content="authenticity_token">
+    <meta name="csrf-token"
+          content="d21PZnZsxFCkyhaldUTUcbPLzbJlHYCXIR9/wj80oGgTU7bkBRGpIMX1K1r4C+Q56wpgje7TkZvzv5tAC/bY5w==">
+</head>
+
+<body class="container-fluid">
+
+<!-- Header -->
+<div id="header">
+    <!-- Logo -->
+    <a href="/" onclick="runOnPageChange()"><img class="logo_image"
+                                                                            src="static/Logo-340d1e989260a1fa256e031a2f269e2144220d4b8ab48bf7a0e87c3.png"></a>
+
+    <!-- Navigation -->
+    <nav class="navbar">
+        <a onclick="runOnPageChange()" href="/">Create Primers</a>
+        <a onclick="runOnPageChange()" href="/designed_primers">Primers for wheat
+            SNP-Chips</a>
+        <a onclick="runOnPageChange()" href="/about">About</a>
+        <a onclick="runOnPageChange()" href="/cite">Cite</a>
+    </nav>
+</div>
+
+<!-- Error messages -->
+
+<!-- Content -->
+<div id="main-body">
+    <h1>About PolyMarker</h1>
+
+    <p>PolyMarker is an automated bioinformatics pipeline for SNP assay
+        development which increases the probability of generating
+        homoeologue-specific assays for polyploid species. PolyMarker generates a
+        multiple alignment between the target SNP sequence and the selected
+        reference genome (from the drop off menu in green below). It then
+        generates a mask with informative polymorphic positions between
+        homoeologs which are highlighted with respect to the target genome.</p>
+
+    <p>These positions include (see figure for example):</p>
+
+    <ul>
+        <li><strong>Varietal polymorphism:</strong> this is the SNP that is targeted in the assay (&amp;)</li>
+        <li><strong>Genome specific:</strong> this is a homoeologous polymorphism which is <em>only</em> present in the
+            target genome (upper case)
+        </li>
+        <li><strong>Genome semi-specific:</strong> this is a homoeologous
+            polymorphism which is found in 2 of the 3 genomes, hence it
+            discriminates against one of the off-target genomes (lowercase)
+        </li>
+        <li><strong>Homoeologous:</strong> if the target varietal SNP is also a
+            homoeologous polymorphism between genomes (e.g. A, B and D genomes in
+            the wheat reference Chinese Spring)
+        </li>
+    </ul>
+
+    <p>PolyMarker will generate KASP assays which are based on a three
+        primer system. Two diagnostic primers incorporate the alternative
+        varietal SNP at the 3' end, but are otherwise similar (black boxed
+        primers in figure). The third common primer is preferentially selected
+        to incorporate a genome-specific base at the 3' end (red boxed primer in
+        figure), or a semi-specific base in the absence of an adequate genome
+        specific position.</p>
+
+    <p>The code of the PolyMarker pipeline is available in <a
+            href="https://github.com/Uauy-Lab/bioruby-polyploid-tools">github</a>.</p>
+
+    <h2>Using PolyMarker</h2>
+
+    <ul>
+        <li>The input file must be uploaded as a CSV file (can be exported from Excel) with the following columns:
+
+            <ul>
+                <li><strong>Gene id</strong>: An unique identifier for the assay. It must be unique on each run</li>
+                <li><strong>Target chromosome</strong>: This will depend on the
+                    Reference sequence being used. For wheat use 1A, 2D, 7B, etc... Note
+                    that for other species you can find the exact chromosome nomenclature by
+                    generating an example in the home page (press orange “Example” button
+                    once the Reference is selected).
+                </li>
+                <li><strong>Sequence</strong>: The sequence flanking the SNP. The SNP must be marked in the format
+                    <strong>[A/T]</strong> for a varietal SNP with alternative bases, A or T.
+                </li>
+            </ul>
+        </li>
+        <li>PolyMarker takes ~1 minute per marker assuming an input sequence of
+            200 bp (with the varietal SNP in the middle). [Longer sequences can be
+            used, but this will slow down the initial BLAST against the wheat survey
+            sequence. We have not seen improvement in performance with longer
+            sequences; therefore we recommend 200-bp of input sequence. The final
+            multiple alignment for the primer design only considers 100-bp on either
+            side of the target varietal SNP.]
+        </li>
+        <li>BLAST is used to search for the contigs which align to the SNP. By
+            default, the miniumm identity used to match across the genomes it is 90%
+            and the model used is est2genome.
+        </li>
+    </ul>
+
+    <h2>Example</h2>
+
+    <h3>Input file</h3>
+
+    <p>The example input file contains three markers to design. </p>
+
+    <pre><code>1DS_1905169_Cadenza0423_2404_C2404T,1D,ccgccgtcgtatggagcaggccggccaattccttcaaggagtcaaccacctggcgcaaggaccatgaggtccatgctcacgaggtctctttcgttgacgg[C/T]aaaaacaagacggcgccaggctttgagttgctcccggctgtggtggatcaccaaggcaacccgcagccgaccttggtggggatccacgttggccatcccaa
+1DS_40060_Cadenza0423_2998_G2998A,1D,ccagcagcgcccgtcccccttctcccccgaatccgccggagcccagcggacgccggccatgagcacctccgagtagtaagtccccggcgccgccgccgcc[G/A]ccgatctttctttctttctcgcttgatttgtctgcgtttcttttgttccgggtgattgattgatgtgcgtgggctgctgcagcgactacctcttcaagctg
+1DS_1847781_Cadenza0423_2703_G2703A,1D,tttcctctcaaatgtagcttctgcagattcggtggaagggcattcaaccggagaacctcattctcatcacttgcggtcacctctaggtaggacaaaaact[G/A]catctgaataagagactcacagaggcgttcacagtagattctcttcacattcaataacctcaggcttctcatttgcctcagctctcccagttgtctaacag
+</code></pre>
+
+    <p>The input text box supports to have the table separated by TAB, so you can paste the three columns from
+        excel. </p>
+
+    <h3>Output: mask</h3>
+
+    <p>The mask contains the details of the local alignment </p>
+
+    <p><img src="static/mask-58ae9c961af2ae3b536ee5ea2026a592419128dc948199030a5a7a5.png" alt="Drawing"
+            style="width: 800px;"></p>
+
+    <h2>REST API</h2>
+
+    <p>PolyMarker jobs can be submitted via a REST API. To do this you need to submit a POST request to the url <code>'http://www.polymarker.info/snp_files.json'</code>
+    </p>
+
+    <p>The <code>body</code> of the request must follow the following structure:</p>
+
+    <pre><code class="json">{
+    "snp_file":
+    {
+        "reference":"RefSeq v1.0",
+        "email":""
+    },
+    "polymarker_manual_input":
+    {
+        "post":"1DS_1905169_Cadenza0423_2404_C2404T,1D,ccgccgtcgtatggagcaggccggccaattccttcaaggagtcaaccacctggcgcaaggaccatgaggtccatgctcacgaggtctctttcgttgacgg[C/T]aaaaacaagacggcgccaggctttgagttgctcccggctgtggtggatcaccaaggcaacccgcagccgaccttggtggggatccacgttggccatcccaa\n1DS_40060_Cadenza0423_2998_G2998A,1D,ccagcagcgcccgtcccccttctcccccgaatccgccggagcccagcggacgccggccatgagcacctccgagtagtaagtccccggcgccgccgccgcc[G/A]ccgatctttctttctttctcgcttgatttgtctgcgtttcttttgttccgggtgattgattgatgtgcgtgggctgctgcagcgactacctcttcaagctg\n1DS_1847781_Cadenza0423_2703_G2703A,1D,tttcctctcaaatgtagcttctgcagattcggtggaagggcattcaaccggagaacctcattctcatcacttgcggtcacctctaggtaggacaaaaact[G/A]catctgaataagagactcacagaggcgttcacagtagattctcttcacattcaataacctcaggcttctcatttgcctcagctctcccagttgtctaacag"
+    }
+}
+</code></pre>
+
+    <p>The response will contain the ID (<code>XXXXXXXXXXXXXXXXXXXX</code> in the example) of the request and the URL
+        with the link to the results as follow:</p>
+
+    <pre><code class="json">{
+    "id":"XXXXXXXXXXXXXXXXXXXX",
+    "url":"http://www.polymarker.info/snp_files/XXXXXXXXXXXXXXXXXXXX",
+    "path":"/snp_files/XXXXXXXXXXXXXXXXXXXX"
+}
+</code></pre>
+
+    <p>The valid <code>reference</code> values for this instance are:</p>
+
+    <pre><code>    'Glycine max var. Williams 82'
+    'Hordeum vulgare (barley)'
+    'Tetraploid wheat, based on Chinese Spring RefSeq v1.0'
+    'Brassica napus cv Darmor-bzh v4.1'
+    'Brassica oleracea kale-like type TO1000DH'
+    'Brassica rapa ssp. pekinensis line Chiifu 401-42'
+    'Rye (Secale cereale L.) inbred line Lo7 v2'
+    'Durum wheat genome (cv. Svevo)'
+    'Triticum urartu (Tu2.0)'
+    'Wheat cv Chinese Spring RefSeq v1.0'
+    'Triticum aestivum (cv. Paragon)'
+    'Triticum aestivum (cv. Cadenza)'
+    'Triticum aestivum (cv. Robigus)'
+    'Triticum aestivum (cv. Claire)'
+    'Triticum turgidum (cv. Kronos)'
+    'Wheat cv Chinese Spring RefSeq v1.0 (Full sequence)'
+    'Triticum aestivum, Fielder, 201216'
+    'Triticum turgidum, Kronos, v1.1'
+    'Triticum aestivum, Chinese Spring, IWGSC v2.1'
+</code></pre>
+
+</div>
+
+<!-- Footer -->
+<div class="footer">
+    <img class="logo" src="static/jic-50e00d9b8e94eff1d9bcdab148524a0118b2cf4d980e24b9a9285eac.png"
+         style="margin-left: 133.106px; margin-right: 133.106px;">
+    <img class="logo" src="static/bbsrc-78cb6a1870bbe0b81f8885f7136a85998a5a1d4e055d0cf3b53118.png"
+         style="margin-left: 133.106px; margin-right: 133.106px;">
+    <img class="logo" src="static/iwyp-5f29e83554a9ca31addec57587ca00d6d9c14f12d242c596f731076.png"
+         style="margin-left: 133.106px; margin-right: 133.106px;">
+    <img class="logo" src="static/DFW-39bb36e2c93b9e54d0b4eea2848651cfd4ef436928b838b8002003bb.jpg"
+         style="margin-left: 133.106px; margin-right: 133.106px;">
+</div>
+
+
+</body>
+</html>

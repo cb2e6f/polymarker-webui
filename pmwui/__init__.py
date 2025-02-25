@@ -242,7 +242,27 @@ def ref():
     return render_template('ref.html', references=references, message=message)
 
 
+@app.route('/about', methods=['GET'])
+def about():
+    return render_template('about.html')
 
+
+@app.route('/cite', methods=['GET'])
+def cite():
+    return render_template('cite.html')
+
+@app.route('/designed_primers', methods=['GET'])
+def designed():
+    return render_template('designed.html')
+
+
+@app.route('/idx', methods=['GET'])
+def idx():
+    return render_template('index2.html')
+
+@app.route('/res', methods=['GET'])
+def res():
+    return render_template('res.html')
 
 def post_process_masks(src, des):
     src_file = open(src, 'r')

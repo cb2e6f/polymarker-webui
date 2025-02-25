@@ -19,7 +19,6 @@ def worker(cv, s):
 
 
 def main():
-    command = "polymarker.rb -m #{snp_file.polymarker_path} -o #{snp_file.polymarker_path}_out -c #{ref.path} -g #{ref.genome_count} -a #{ref.arm_selection} -A blast"
 
     e = threading.Event()
     s = threading.Semaphore()

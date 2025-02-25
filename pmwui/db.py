@@ -10,7 +10,7 @@ def open_db():
         host="localhost",
         user="re",
         password="",
-        database="cmd_queue_db"
+        database="polymarker_webui"
     )
 
     return db
@@ -28,9 +28,9 @@ def init_db():
     )
 
     cursor = db.cursor()
-    cursor.execute("DROP DATABASE IF EXISTS cmd_queue_db")
-    cursor.execute("CREATE DATABASE cmd_queue_db")
-    cursor.execute("USE cmd_queue_db")
+    cursor.execute("DROP DATABASE IF EXISTS polymarker_webui")
+    cursor.execute("CREATE DATABASE polymarker_webui")
+    cursor.execute("USE polymarker_webui")
     cursor.execute(
         "CREATE TABLE cmd_queue(id INTEGER PRIMARY KEY AUTO_INCREMENT NOT NULL, cmd TEXT NOT NULL, status TEXT NOT NULL)")
     db.commit()

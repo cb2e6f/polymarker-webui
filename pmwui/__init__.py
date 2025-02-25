@@ -1,17 +1,17 @@
-import subprocess
 import sys
+from asyncio import sleep
 
-import mariadb
 import yaml
-from flask import Flask, jsonify, request
+import yaml.parser
 
 import os
 import subprocess
 import uuid
 
-import mariadb
 from flask import Flask, flash, request, redirect, jsonify, render_template
 from werkzeug.utils import secure_filename
+
+from .db import *
 
 # from post_process_masks import post_process_masks
 
@@ -138,13 +138,13 @@ def add(path):
             reference_data = yaml.safe_load(reference_data_file)
             print("-------")
             try:
-                for ref in reference_data:
-                    index(ref["path"])
+                for refs in reference_data:
+                    index(refs["path"])
                     db_connection = connect()
 
                     if db_connection is not None:
                         create_reference_table(db_connection)
-                        insert_reference(db_connection, ref)
+                        insert_reference(db_connection, refs)
             except KeyError:
                 print(f"missing path value from reference yaml")
                 exit(-1)
@@ -161,24 +161,10 @@ def add(path):
 ########################################################################
 
 
-def allowed_file(filename):
-    return '.' in filename and \
-        filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
-
-
 @app.post('/echo')
 def echo():
     data = request.get_json()
     return jsonify(data)
-
-
-def get_references():
-    connection = connect()
-    cursor = connection.cursor()
-    cursor.execute("SELECT id, name FROM reference")
-    references = cursor.fetchall()
-    connection.close()
-    return references
 
 
 def get_reference_from_name(name):
@@ -190,28 +176,13 @@ def get_reference_from_name(name):
     return reference
 
 
-def get_referece_cmd_data(id):
+def get_reference_cmd_data(ref_id):
     connection = connect()
     cursor = connection.cursor()
-    cursor.execute("SELECT path, genome_count, arm_selection FROM reference WHERE id = %s", (id,))
+    cursor.execute("SELECT path, genome_count, arm_selection FROM reference WHERE id = %s", (ref_id,))
     reference = cursor.fetchone()
     connection.close()
     return reference
-
-
-def connect():
-    try:
-        connection = mariadb.connect(
-            user="re",
-            password="",
-            host="localhost",
-            port=3306,
-            database="polymarker_webui"
-        )
-        return connection
-    except mariadb.Error as e:
-        print(f"error connecting to mariadb: {e}")
-        return None
 
 
 @app.route('/ref', methods=['GET', 'POST'])
@@ -219,7 +190,7 @@ def ref():
     message = ''
 
     if request.method == 'POST':
-        selected_name = request.form['reference']
+        # selected_name = request.form['reference']
 
         print(request.form)
 
@@ -230,11 +201,11 @@ def ref():
         # connection = db.connect()
         # cursor = connection.cursor()
         # cursor.execute("SELECT id FROM reference WHERE name = ?", (selected_name,))
-        # refernce_id = cursor.fetchone()[0]
+        # reference_id = cursor.fetchone()[0]
         # connection.close()
         #
         # # Process the file with the selected employee ID
-        message = "blegh"  # process_file(file_name, employee_id)
+        message = "some message"  # process_file(file_name, employee_id)
 
     # Get the list of employees for the dropdown
     references = get_references()
@@ -251,6 +222,7 @@ def about():
 def cite():
     return render_template('cite.html')
 
+
 @app.route('/designed_primers', methods=['GET'])
 def designed():
     return render_template('designed.html')
@@ -260,9 +232,11 @@ def designed():
 def idx():
     return render_template('index2.html')
 
+
 @app.route('/res', methods=['GET'])
 def res():
     return render_template('res.html')
+
 
 def post_process_masks(src, des):
     src_file = open(src, 'r')
@@ -291,6 +265,7 @@ def post_process_masks(src, des):
     des_file.close()
     src_file.close()
 
+
 @app.route('/', methods=['GET', 'POST'])
 def index():
     if request.method == 'POST':
@@ -306,7 +281,7 @@ def index():
                 file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
 
         email = request.form['email']
-        id = uuid.uuid4()
+        uid = uuid.uuid4()
         reference_id = get_reference_from_name(reference)
 
         print(f"reference: {reference}")
@@ -314,15 +289,15 @@ def index():
         print(f"text: {text}")
         print(f"filename: {filename}")
         print(f"email: {email}")
-        print(f"id: {id}")
+        print(f"id: {uid}")
 
         if filename == '' and text != '':
-            filename = f"{id.hex}.csv"
+            filename = f"{uid.hex}.csv"
             file = open(os.path.join(app.config['UPLOAD_FOLDER'], filename), 'w')
             file.write(text)
             file.close()
 
-        ref_data = get_referece_cmd_data(reference_id[0])
+        ref_data = get_reference_cmd_data(reference_id[0])
 
         print(ref_data)
 
@@ -330,7 +305,7 @@ def index():
         ref_genome_count = ref_data[1]
         ref_arm_selection = ref_data[2]
 
-        command = f"polymarker.rb -m {os.path.join(app.config['UPLOAD_FOLDER'], filename)} -o {app.static_folder}/data/{id}_out -c {ref_path} -g {ref_genome_count} -a {ref_arm_selection} -A blast"
+        command = f"polymarker.rb -m {os.path.join(app.config['UPLOAD_FOLDER'], filename)} -o {app.static_folder}/data/{uid}_out -c {ref_path} -g {ref_genome_count} -a {ref_arm_selection} -A blast"
         print(command)
         result = subprocess.run(command, shell=True)
 
@@ -340,14 +315,14 @@ def index():
 
         print(os.listdir(app.static_folder))
 
-        os.rename(f"{app.static_folder}/data/{id}_out/exons_genes_and_contigs.fa",
-                  f"{app.static_folder}/data/{id}_out/exons_genes_and_contigs.fa.og")
+        os.rename(f"{app.static_folder}/data/{uid}_out/exons_genes_and_contigs.fa",
+                  f"{app.static_folder}/data/{uid}_out/exons_genes_and_contigs.fa.og")
 
-        post_process_masks(f"{app.static_folder}/data/{id}_out/exons_genes_and_contigs.fa.og",
-                           f"{app.static_folder}/data/{id}_out/exons_genes_and_contigs.fa")
+        post_process_masks(f"{app.static_folder}/data/{uid}_out/exons_genes_and_contigs.fa.og",
+                           f"{app.static_folder}/data/{uid}_out/exons_genes_and_contigs.fa")
 
         print(f"result: {result}")
-        return render_template('result.html', id=id)
+        return render_template('result.html', id=uid)
 
     references = get_references()
     return render_template('index.html', references=references)
@@ -356,15 +331,15 @@ def index():
 @app.route('/2', methods=['GET', 'POST'])
 def index2():
     if request.method == 'POST':
-        flash("Youve been posted")
+        flash("You've been posted")
         print(request.files)
         print(request.form)
 
         print(request.files['file'].filename)
 
-        reference = request.form['reference']
-        text = request.form['text']
-        email = request.form['email']
+        # reference = request.form['reference']
+        # text = request.form['text']
+        # email = request.form['email']
 
         # check if the post request has the file part
         if 'file' not in request.files:
@@ -385,6 +360,18 @@ def index2():
     return render_template('index.html', references=references)
 
 
+def worker(cv, s):
+    while True:
+        work = db.get(s)
+        if work is not None:
+            sleep(3)
+            print(work)
+            db.update(work[0], "DONE")
+        else:
+            print("...")
+            cv.wait()
+
+
 def main():
     if len(sys.argv) > 1:
         if sys.argv[1] == "add":
@@ -394,7 +381,23 @@ def main():
             else:
                 print("invalid options")
             exit(0)
+
+    e = threading.Event()
+    s = threading.Semaphore()
+
+    worker1 = threading.Thread(target=worker, args=(e, s))
+    worker1.start()
+
+    worker2 = threading.Thread(target=worker, args=(e, s))
+    worker2.start()
+
+    e.set()
+    e.clear()
+
     app.run(debug=True)
+
+    worker1.join()
+    worker2.join()
 
 
 if __name__ == "__main__":

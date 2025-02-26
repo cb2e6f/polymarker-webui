@@ -27,8 +27,8 @@ def init_db():
     )
 
     cursor = db.cursor()
-    cursor.execute("DROP DATABASE IF EXISTS polymarker_webui")
-    cursor.execute("CREATE DATABASE polymarker_webui")
+    # cursor.execute("DROP DATABASE IF EXISTS polymarker_webui")
+    # cursor.execute("CREATE DATABASE polymarker_webui")
     cursor.execute("USE polymarker_webui")
     cursor.execute(
         "CREATE TABLE cmd_queue(id INTEGER PRIMARY KEY AUTO_INCREMENT NOT NULL, cmd TEXT NOT NULL, status TEXT NOT NULL)")

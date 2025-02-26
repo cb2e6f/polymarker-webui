@@ -1,4 +1,6 @@
+import datetime
 import sys
+import threading
 from asyncio import sleep
 
 import yaml
@@ -51,7 +53,7 @@ def greet(name):
     return f'Hello, {name}!'
 
 
-def index(path):
+def index_ref(path):
     print(f"path ===== {path}")
     print("indexing")
     command = f"samtools faidx {path}"
@@ -113,6 +115,28 @@ def create_reference_table(connection):
         print(f"error creating reference table: {e}")
 
 
+def create_query_table(connection):
+    cursor = connection.cursor()
+
+    query = """
+    CREATE TABLE IF NOT EXISTS query (
+        id INTEGER PRIMARY KEY AUTO_INCREMENT,
+        uid TEXT,
+        reference TEXT,
+        email TEXT,
+        date TEXT,
+        status TEXT        
+    );
+    """
+
+    try:
+        cursor.execute(query)
+        connection.commit()
+        print(f"created query table: {query}")
+    except mariadb.Error as e:
+        print(f"error creating query table: {e}")
+
+
 def insert_reference(connection, config):
     cursor = connection.cursor()
 
@@ -131,6 +155,22 @@ def insert_reference(connection, config):
         print(f"error inserting reference: {e}")
 
 
+def insert_query(connection, uid, reference, email, date):
+    cursor = connection.cursor()
+
+    query = """
+    INSERT INTO query (uid, reference, email, date)
+    VALUES (?, ?, ?, ?)
+    """
+
+    try:
+        cursor.execute(query, (uid, reference, email, date))
+        connection.commit()
+        print(f"inserted query: {query}")
+    except mariadb.Error as e:
+        print(f"error inserting query: {e}")
+
+
 def add(path):
     try:
         reference_data_file = open(path)
@@ -139,12 +179,13 @@ def add(path):
             print("-------")
             try:
                 for refs in reference_data:
-                    index(refs["path"])
+                    index_ref(refs["path"])
                     db_connection = connect()
 
                     if db_connection is not None:
                         create_reference_table(db_connection)
                         insert_reference(db_connection, refs)
+                        create_query_table(db_connection)
             except KeyError:
                 print(f"missing path value from reference yaml")
                 exit(-1)
@@ -284,6 +325,12 @@ def index():
         uid = uuid.uuid4()
         reference_id = get_reference_from_name(reference)
 
+        if filename == '' and text != '':
+            filename = f"{uid.hex}.csv"
+            file = open(os.path.join(app.config['UPLOAD_FOLDER'], filename), 'w')
+            file.write(text)
+            file.close()
+
         print(f"reference: {reference}")
         print(f"reference_id: {reference_id}")
         print(f"text: {text}")
@@ -291,11 +338,10 @@ def index():
         print(f"email: {email}")
         print(f"id: {uid}")
 
-        if filename == '' and text != '':
-            filename = f"{uid.hex}.csv"
-            file = open(os.path.join(app.config['UPLOAD_FOLDER'], filename), 'w')
-            file.write(text)
-            file.close()
+        db_connection = connect()
+
+        if db_connection is not None:
+            insert_query(db_connection, uid, reference_id[0], email, datetime.datetime.now())
 
         ref_data = get_reference_cmd_data(reference_id[0])
 
@@ -380,6 +426,9 @@ def main():
                     add(conf)
             else:
                 print("invalid options")
+            exit(0)
+        elif sys.argv[1] == "init":
+            init_db()
             exit(0)
 
     e = threading.Event()

@@ -27,6 +27,8 @@ app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 app.secret_key = b'_5#y2L"F4Q8z\n\xec]/'
 
 
+e = threading.Event()
+
 def allowed_file(filename):
     return '.' in filename and \
         filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
@@ -225,6 +227,14 @@ def get_reference_cmd_data(ref_id):
     connection.close()
     return reference
 
+def get_query_cmd_data(uid):
+    connection = connect()
+    cursor = connection.cursor()
+    cursor.execute("SELECT reference FROM query WHERE uid = %s", (uid,))
+    reference = cursor.fetchone()
+    connection.close()
+    return reference
+
 
 @app.route('/ref', methods=['GET', 'POST'])
 def ref():
@@ -343,6 +353,13 @@ def index():
         if db_connection is not None:
             insert_query(db_connection, uid, reference_id[0], email, datetime.datetime.now())
 
+        submit(uid)
+
+        e.set()
+        e.clear()
+
+        print("########################################")
+
         ref_data = get_reference_cmd_data(reference_id[0])
 
         print(ref_data)
@@ -431,7 +448,7 @@ def main():
             init_db()
             exit(0)
 
-    e = threading.Event()
+    # e = threading.Event()
     s = threading.Semaphore()
 
     worker1 = threading.Thread(target=worker, args=(e, s))

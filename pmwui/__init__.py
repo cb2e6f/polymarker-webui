@@ -336,7 +336,7 @@ def index():
         reference_id = get_reference_from_name(reference)
 
         if filename == '' and text != '':
-            filename = f"{uid.hex}.csv"
+            filename = f"{uid}.csv"
             file = open(os.path.join(app.config['UPLOAD_FOLDER'], filename), 'w')
             file.write(text)
             file.close()
@@ -360,35 +360,46 @@ def index():
 
         print("########################################")
 
-        ref_data = get_reference_cmd_data(reference_id[0])
-
-        print(ref_data)
-
-        ref_path = ref_data[0]
-        ref_genome_count = ref_data[1]
-        ref_arm_selection = ref_data[2]
-
-        command = f"polymarker.rb -m {os.path.join(app.config['UPLOAD_FOLDER'], filename)} -o {app.static_folder}/data/{uid}_out -c {ref_path} -g {ref_genome_count} -a {ref_arm_selection} -A blast"
-        print(command)
-        result = subprocess.run(command, shell=True)
-
-        print("_____________")
-        print(app.static_folder)
-        print("_____________")
-
-        print(os.listdir(app.static_folder))
-
-        os.rename(f"{app.static_folder}/data/{uid}_out/exons_genes_and_contigs.fa",
-                  f"{app.static_folder}/data/{uid}_out/exons_genes_and_contigs.fa.og")
-
-        post_process_masks(f"{app.static_folder}/data/{uid}_out/exons_genes_and_contigs.fa.og",
-                           f"{app.static_folder}/data/{uid}_out/exons_genes_and_contigs.fa")
-
-        print(f"result: {result}")
+        print(f"result: =S")
         return render_template('result.html', id=uid)
 
     references = get_references()
     return render_template('index.html', references=references)
+
+def run_pm(uid):
+    ref = get_query_cmd_data(uid)
+
+    print("$$$$$$$$$$$$$$$$$$$$")
+    print(ref)
+    print("$$$$$$$$$$$$$$$$$$$$")
+
+    filename = f"{uid}.csv"
+    ref_data = get_reference_cmd_data(ref[0])
+
+    print(ref_data)
+
+    ref_path = ref_data[0]
+    ref_genome_count = ref_data[1]
+    ref_arm_selection = ref_data[2]
+
+    command = f"polymarker.rb -m {os.path.join(app.config['UPLOAD_FOLDER'], filename)} -o {app.static_folder}/data/{uid}_out -c {ref_path} -g {ref_genome_count} -a {ref_arm_selection} -A blast"
+    print(command)
+    result = subprocess.run(command, shell=True)
+
+    print(result)
+
+    print("_____________")
+    print(app.static_folder)
+    print("_____________")
+
+    print(os.listdir(app.static_folder))
+
+    os.rename(f"{app.static_folder}/data/{uid}_out/exons_genes_and_contigs.fa",
+    f"{app.static_folder}/data/{uid}_out/exons_genes_and_contigs.fa.og")
+
+    post_process_masks(f"{app.static_folder}/data/{uid}_out/exons_genes_and_contigs.fa.og",
+    f"{app.static_folder}/data/{uid}_out/exons_genes_and_contigs.fa")
+
 
 
 @app.route('/2', methods=['GET', 'POST'])
@@ -429,6 +440,7 @@ def worker(cv, s):
         if work is not None:
             sleep(3)
             print(work)
+            run_pm(work[1])
             db.update(work[0], "DONE")
         else:
             print("...")

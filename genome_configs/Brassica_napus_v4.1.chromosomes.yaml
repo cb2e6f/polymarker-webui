@@ -7,7 +7,7 @@
     The scaffolds where assigned to their corresponding genome by comparing the diploid progenitors and the scaffolds where anchored with the aid of genetic maps.  
     Reference sequence available in [genoscope](http://www.genoscope.cns.fr/brassicanapus/data/).
     The assembly is described in [Chalhoub, B. et al (2014)](https://doi.org/10.1126/science.1253435)
-  example: >
+  example: |
     b_napus_test1,chrC04,AGAATCACAGAACAAGCTGGTGTTGTCCTAACACTTGATCCCAAACCGATTGAGGGTGACT[G/C]GAACGGTGCTGGTTGCCATACCAATTACAGCACAAAGAGCATGAGAGAGGACGGAGGA
     b_napus_test2,chrA08,CAAAGACGCTCCAATCCACGACACTTCCGGTGTTGTTTCCATCTCTGACGATGGAAACCTC[G/C]TGGTTACCGATGGTCGAAACCGTCTTATATGGTCGACGAACGTCACGGTACCAGTGGC
     b_napus_test3,chrC08,CGCCGGAAAACAAACCCTGCTCCCGGCCACGGCCTCGCCTTCATCGTGGTCCCTACCATT[A/T]ACAACGACGGCGCCGCCGGAAAAGGCTTCATCGGTCTGTTAAACCAAACCAATAAGGGA

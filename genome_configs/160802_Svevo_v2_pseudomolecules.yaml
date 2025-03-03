@@ -10,7 +10,7 @@
     The assembly scaffolds have been anchored to a high-density genetic map based on Svevo × Zavitan RIL population and merged 
     into super-scaffolds using Hi-C data; 95% of the scaffolds have been anchored along the chromosomes and 90% oriented. 
     Reference sequence available in [InterOmics](https://www.interomics.eu/durum-wheat-genome)
-  example: >
+  example: |
     Kronos4607.chr2A.256748,2A,agaagcttattatgcatatgtggaattcatttattcggaaacaaaggtatgcgtgcaaaatcaagtgttttacggacggtactcgctgaaccctacatgc[C/T]tcgtgtcttgctgaaagagtatgataattcattcacagggtgctagctgatgggcatataccttgggcctgtgagggcttctcccggcttcatggaccgc
     Kronos3485.chr3A.750506662,3A,gcttgtttcatgaaaatcatgtttactagagcttagtaattaatagtcttaacatgttaaatagccatcgatgacccaattactggtgtcagaggaccaa[G/A]atgccataatttcttacaaacaagttgtgatgcttcattagttaccactataccaactaagattccttaggagtttgaccatcaaactgtagttttacgg
     Kronos3658.chr4A.82557,4A,gacggtgaacttgacctcgggcgcctcggcaacggtggcggcgtaggccttcttgacggcggactcgagggcagggacgaacttgtagcccgcgtatgcg[C/T]cgccagtggtctccttgatggccttgtcgaaggcggactcgaagacggtgaacttgtcgttgacgggggcagcgtcggcggcggtggcggcaatcctgaa

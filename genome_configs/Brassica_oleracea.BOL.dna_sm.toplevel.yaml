@@ -8,7 +8,7 @@
     The assembly has been orientated and assigned to the nine pseudochromosomes using dense genotype-by-sequencing genetic maps.
     Reference sequence available in [ensembl!](http://plants.ensembl.org/Brassica_oleracea/Info/Index)[fasta](ftp://ftp.ensemblgenomes.org/pub/plants/release-41/fasta/brassica_oleracea/dna/).
     The assembly is described in [Parkin, I. et al (2014)](https://doi.org/10.1186/gb-2014-15-6-r77)
-  example: >
+  example: |
     b_oleracea_test1,C4,AGAATCACAGAACAAGCTGGTGTTGTCCTAACACTTGATCCCAAACCGATTGAGGGTGACT[G/C]GAACGGTGCTGGTTGCCATACCAATTACAGCACAAAGAGCATGAGAGAGGACGGAGGA
     b_oleracea_test2,C8,CGCCGGAAAACAAACCCTGCTCCCGGCCACGGCCTCGCCTTCATCGTGGTCCCTACCATT[A/T]ACAACGACGGCGCCGCCGGAAAAGGCTTCATCGGTCTGTTAAACCAAACCAATAAGGGA
     b_oleracea_test3,C9,ATGGCACCACGAGGCCTTTTTTATATTTCTTATACAAACAGTAGTTCATTTAAG[A/G]TTTAGTTTTCTTCTATAAACTAGTTTATCCGATACAAAAACTGACAACTTTCAGCCTGTGTTGTT

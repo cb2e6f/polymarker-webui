@@ -56,7 +56,7 @@
 <div id="header">
     <!-- Logo -->
     <a href="/" onclick="runOnPageChange()"><img class="logo_image"
-                                                                            src="static/Logo-340d1e989260a1fa256e031a2f269e2144220d4b8ab48bf7a0e87c3.png"></a>
+                                                 src="static/Logo-340d1e989260a1fa256e031a2f269e2144220d4b8ab48bf7a0e87c3.png"></a>
 
     <!-- Navigation -->
     <nav class="navbar">
@@ -194,27 +194,11 @@
 </code></pre>
 
     <p>The valid <code>reference</code> values for this instance are:</p>
-
-    <pre><code>    'Glycine max var. Williams 82'
-    'Hordeum vulgare (barley)'
-    'Tetraploid wheat, based on Chinese Spring RefSeq v1.0'
-    'Brassica napus cv Darmor-bzh v4.1'
-    'Brassica oleracea kale-like type TO1000DH'
-    'Brassica rapa ssp. pekinensis line Chiifu 401-42'
-    'Rye (Secale cereale L.) inbred line Lo7 v2'
-    'Durum wheat genome (cv. Svevo)'
-    'Triticum urartu (Tu2.0)'
-    'Wheat cv Chinese Spring RefSeq v1.0'
-    'Triticum aestivum (cv. Paragon)'
-    'Triticum aestivum (cv. Cadenza)'
-    'Triticum aestivum (cv. Robigus)'
-    'Triticum aestivum (cv. Claire)'
-    'Triticum turgidum (cv. Kronos)'
-    'Wheat cv Chinese Spring RefSeq v1.0 (Full sequence)'
-    'Triticum aestivum, Fielder, 201216'
-    'Triticum turgidum, Kronos, v1.1'
-    'Triticum aestivum, Chinese Spring, IWGSC v2.1'
-</code></pre>
+    <pre><code>
+        {% for reference in references -%}
+        '{{ reference[1] }}'
+        {% endfor %}
+    </code></pre>
 
 </div>
 

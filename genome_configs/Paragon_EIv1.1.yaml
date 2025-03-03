@@ -7,7 +7,7 @@
     and scaffolds below 1 kbp. The assembly is available in the [grassroots portal](https://opendata.earlham.ac.uk/wheat/under_license/toronto/Clavijo_2017-04-25_Wheat-LoLa/)
     This assembly is part of a BBSRC strategic longer and larger (sLoLa) grant award between Earlham Institute (EI), John Innes Centre (JIC), European Bioinformatics Institute (EBI) and Rothamsted Research (RRes).
     To find the scaffold where your markers are, you can blast the sequence [here](https://wheatis.tgac.ac.uk/grassroots-portal/blast).
-  example: >
+  example: |
     BA00894563,Triticum_aestivum_Paragon_EIv1.1_scaffold_049530,TGGCAATCGTGCATCCGAAGCTCCGCGGCCCGGCACCATGCCTTCCTCTC[C/T]GTCTCGCTCGCCCGACGCTTGGAGCGTCTGCTCGTCGTCGGCTCTCACCA
     BA00155703,Triticum_aestivum_Paragon_EIv1.1_scaffold_029723,TTGGAACTGTGCGAGGTCTCTTCATCTTTGGAAGCTCTGCTCTGTTTTTC[C/T]TTCTTTCTCTAGCATTTGATTCCTGCGTATTCATTCGTGTAATGCCGACA
     BA00332629,Triticum_aestivum_Paragon_EIv1.1_scaffold_025636,CATGGTGACGGAGTTGAGGAGGCATTCTACACGACAGACAGGGTTATGAC[A/G]GTCTCATTCCACAAGTTTGGGGATTATTTCCCAGGTACAGGGGATGTCCG

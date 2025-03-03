@@ -10,7 +10,7 @@
     representing the majority of the wheat genome. 
     Reference sequence available in [URGI](https://wheat-urgi.versailles.inra.fr/Seq-Repository/Assemblies)
     The assembly is described in [IWGSC (2018)](https://doi.org/10.1126/science.aar7191).
-  example: >
+  example: |
     Kronos4607.chr2A.256748,2A,agaagcttattatgcatatgtggaattcatttattcggaaacaaaggtatgcgtgcaaaatcaagtgttttacggacggtactcgctgaaccctacatgc[C/T]tcgtgtcttgctgaaagagtatgataattcattcacagggtgctagctgatgggcatataccttgggcctgtgagggcttctcccggcttcatggaccgc
     Kronos3485.chr3A.750506662,3A,gcttgtttcatgaaaatcatgtttactagagcttagtaattaatagtcttaacatgttaaatagccatcgatgacccaattactggtgtcagaggaccaa[G/A]atgccataatttcttacaaacaagttgtgatgcttcattagttaccactataccaactaagattccttaggagtttgaccatcaaactgtagttttacgg
     Kronos3658.chr4A.82557,4A,gacggtgaacttgacctcgggcgcctcggcaacggtggcggcgtaggccttcttgacggcggactcgagggcagggacgaacttgtagcccgcgtatgcg[C/T]cgccagtggtctccttgatggccttgtcgaaggcggactcgaagacggtgaacttgtcgttgacgggggcagcgtcggcggcggtggcggcaatcctgaa

@@ -7,7 +7,7 @@
     in collaboration with a consortium of research labs and published. Current assembly is version v2.1 and comprises a total 978 Mb
     The reference sequence is available in [Ensembl plants Relase 50](ftp://ftp.ensemblgenomes.org/pub/plants/release-50/fasta/glycine_max/dna/). 
     The version of the assembly used has the repeats masked (Glycine_max.Glycine_max_v2.1.dna_rm.toplevel.fa).
-  example: >
+  example: |
     Test_marker_1,1,GAGGAGCTCGTGACGCTAGTGTCGGAGATTATCAGCGCCGGCACGGACACAAGCGCCACC[G/T]CGCTGGAGTGGGCGCTGCTTCATTTGGTTATGGATCAAGAGATTCAAGAGAGGCTGTAC
     Test_marker_2,2,ATCTGCAATCCACTGAGTTTGTATATCTTGGATGCGGACCAAATGGCCAATTCTTCAATA[T/A]CGAGTCCCTATTGAAGTTCATTCTGTGTAGTTTCTTCTTTTTGTTTACCACTTCTCTGC
     Test_marker_3,18,TCACCCTAGAATTTAGGATTTGTGAAAAAATTGCTCTACATTTGTCAAGGATAACATGCA[C/A]GTTAGCTACACCATTTGCAACATGATTAAAAGCCTCTACCACAGTCTGTCAGTCACTTT

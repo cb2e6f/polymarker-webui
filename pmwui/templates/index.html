@@ -2,11 +2,9 @@
 <html lang="en">
 <head>
     <title>PolyMarker - webui</title>
-
     <link rel="stylesheet" href="/static/style.css"/>
 </head>
 <body>
-
 
 <div id="header">
     <a href="/" onclick="runOnPageChange()"><img class="logo_image"
@@ -19,38 +17,6 @@
         <a onclick="runOnPageChange()" href="/cite">Cite</a>
     </nav>
 </div>
-
-<form class="new_snp_file" method="POST" , enctype="multipart/form-data">
-    <label for="reference">reference:</label>
-    <select name="reference" id="reference">
-        {% for reference in references %}
-        <option value="{{ reference[1] }}">{{ reference[1] }}</option>
-        {% endfor %}
-    </select>
-
-    <br><br>
-
-    <label for="text">text:</label>
-    <div id="manInputCont">
-        <textarea  class="form-control" id="manualInput"   name="text"></textarea>
-    </div>
-    <br><br>
-
-    <label for="file">file:</label>
-    <input type=file name=file>
-
-    <br><br>
-
-    <label for="email">email:</label>
-    <input type="text" id="email" name="email">
-
-    <br><br>
-
-    <input type=submit value=submit>
-</form>
-
-<br>
-
 
 <div id="main-body">
     <div id="content">
@@ -69,7 +35,6 @@
         <p>If your request is terminated due a timeout, try with less markers and make sure the SNPs are not in low
             complexity regions. </p>
 
-        </p>
 
     </div>
 
@@ -78,277 +43,113 @@
     <div class="sidebar">
 
         <div class="form-group" id="sidebar">
-
-            <form class="new_snp_file" id="new_snp_file" enctype="multipart/form-data" action="/snp_files"
-                  accept-charset="UTF-8" method="post"><input name="utf8" type="hidden" value="&#x2713;"/><input
-                    type="hidden" name="authenticity_token"
-                    value="IliriLEt3Zv52/2SndudRcwokebHq7NqWpxAj21UnT2TytPSvnhTxqhbVhNvMCP2A2VcGu2FPsFHE8d3zm9Blg=="/>
+            <form class="new_snp_file" method="POST" enctype="multipart/form-data">
 
                 <div id="fileInputCont">
-                    <label for="fileInput">File</label>
-                    <input accept=".csv" class="form-control-file" id="fileInput" type="file"
-                           name="snp_file[polymarker_input]"/>
+                    <label for="file">File</label>
+                    <input type=file name=file class="form-control-file" id="fileInput">
                 </div>
-                <br/>
+
+                <br>
                 <span style="color: red;">OR</span>
-                <br/>
+                <br>
+
+
                 <div id="manInputCont">
-                    <label for="manualInput">Manual Input</label>
-                    <textarea class="form-control" id="manualInput" placeholder="Enter your input manually"
-                              name="polymarker_manual_input[post]">
-</textarea>
+
+
+                    <label for="text">Manual Input</label>
+                    <textarea class="form-control" id="manualInput" name="text"
+                              placeholder="Enter your input manually"></textarea>
                     <br/>
+
                     <button id="populateExample" class="btn btn-warning" type="button">Example</button>
+
+
                     <button id="clearInput" class="btn" type="button">Clear Input</button>
+
+
+                    <script type="text/javascript">
+
+                        var selectElement = document.getElementById('populateExample');
+                        var divElementq = document.getElementById('manualInput');
+                        var clearElement = document.getElementById('clearInput');
+
+
+                        selectElement.onclick = function () {
+                            var selectElement2 = document.getElementById('reference');
+                            var selectedValue = selectElement2.options[selectElement2.selectedIndex].value;
+                            divElementq.value = selectedValue;
+                                if (selectedValue == '-- EMPTY --') {
+                                    divElementq.innerHTML = 'invalid selection';
+                                }
+                                {% for reference in references %}
+                                else if (selectedValue == '{{ reference[1] }}') {
+                                    var ref_html = `{{ reference[3] }}`;
+                                    divElementq.value = ref_html;
+                                }
+                                {% endfor %}
+                        };
+
+                        clearElement.onclick = function () {
+                            divElementq.value = "";
+                        }
+
+
+                    </script>
+
                     <div class="refSelectContainer">
                         <h3>Reference</h3>
                         <br/>
-                        <select name="snp_file[reference]" id="snp_file_reference">
-                            <option value="Glycine max var. Williams 82" data-descriptipn="Glycine max var. Williams 82 was sequenced, assembled, and annotated by the U.S. DOE Joint Genome Institute (JGI-PGF)  in collaboration with a consortium of research labs and published. Current assembly is version v2.1 and comprises a total 978 Mb The reference sequence is available in [Ensembl plants Relase 50](ftp://ftp.ensemblgenomes.org/pub/plants/release-50/fasta/glycine_max/dna/).  The version of the assembly used has the repeats masked (Glycine_max.Glycine_max_v2.1.dna_rm.toplevel.fa).
-" class="reference">Glycine max var. Williams 82
-                            </option>
-                            <option value="Hordeum vulgare (barley)" data-descriptipn="The barley genome assembly presented here was produced by the  [International Barley Genome Sequencing Consortium (IBSC)](http://barleygenome.org/) using a  [hierarchical approach](http://europepmc.org/abstract/MED/28447635). Initially multiplexed  short read BAC by BAC contig assemblies (N50: 79 kb) were scaffolded using physical, genetic  and optical maps (N50: 1.9 Mb) and were assigned to chromosomes using a POPSEQ genetic map.  Finally, the linear order and orientation of scaffold sequences was determined using  [chromosome-conformation capture sequencing (Hi-C)](http://wikipedia.org/wiki/Chromosome_conformation_capture).
-The final chromosome-scale assembly consisted of 6,347 ordered super-scaffolds composed of  merged assemblies of individual BACs, representing 4.79 Gb (~95%) of the genomic sequence content,  of which 4.54 Gb have beenassigned to precise chromosomal locations in the Hi-C map.
-The chloroplast genome component and its gene annotation are also present ([KC912687](http://www.ebi.ac.uk/ena/data/view/JQ754651)).
-The assembly and description where downloaded from [ensembl!](http://plants.ensembl.org)
-" class="reference">Hordeum vulgare (barley)
-                            </option>
-                            <option value="Tetraploid wheat, based on Chinese Spring RefSeq v1.0" data-descriptipn="Tetraploid reference produced by substracting the D genome from the hexaploid wheat.  A whole genome assembly has been carried out by the IWGSC in collaboration with the company NRGene.  Using a proprietary algorithm DeNovoMAGIC with Illumina sequencing data a 14.5 Gb assembly was produced.  Sequences have been ordered using POPSEQ data and Hi-C (chromosome conformation capture) to generate 21 pseudomolecules  representing the majority of the wheat genome.  Reference sequence available in [URGI](https://wheat-urgi.versailles.inra.fr/Seq-Repository/Assemblies) The assembly is described in [IWGSC (2018)](https://doi.org/10.1126/science.aar7191).
-" class="reference">Tetraploid wheat, based on Chinese Spring RefSeq v1.0
-                            </option>
-                            <option value="Brassica napus cv Darmor-bzh v4.1" data-descriptipn="The assembly was produced with a misture of Sanger BAC libraries, GS FLX Titanium (450bp) and Illumina HiSeq (100bp) and assembled with SOAP.  The scaffolds where assigned to their corresponding genome by comparing the diploid progenitors and the scaffolds where anchored with the aid of genetic maps.   Reference sequence available in [genoscope](http://www.genoscope.cns.fr/brassicanapus/data/). The assembly is described in [Chalhoub, B. et al (2014)](https://doi.org/10.1126/science.1253435)
-" class="reference">Brassica napus cv Darmor-bzh v4.1
-                            </option>
-                            <option value="Brassica oleracea kale-like type TO1000DH"
-                                    data-descriptipn="The genomic sequence within this version of Ensembl includes 33,459 scaffolds (&gt;200 bp) with an N50 of 850 kb that was assembled  at NRC-Saskatoon using a hybrid approach from Illumina, Roche 454 and Sanger sequence data.  The assembly has been orientated and assigned to the nine pseudochromosomes using dense genotype-by-sequencing genetic maps. Reference sequence available in [ensembl!](http://plants.ensembl.org/Brassica_oleracea/Info/Index)[fasta](ftp://ftp.ensemblgenomes.org/pub/plants/release-41/fasta/brassica_oleracea/dna/). The assembly is described in [Parkin, I. et al (2014)](https://doi.org/10.1186/gb-2014-15-6-r77)
-" class="reference">Brassica oleracea kale-like type TO1000DH
-                            </option>
-                            <option value="Brassica rapa ssp. pekinensis line Chiifu 401-42" data-descriptipn="The genomic sequence within this version of Ensembl includes 193 large scaffolds assembled by CAAS-IVF,  which have been orientated and assigned to pseudochromosomes using publicly available genetic markers. Reference sequence available in [ensembl!](http://plants.ensembl.org/Brassica_rapa/Info/Index)[fasta](ftp://ftp.ensemblgenomes.org/pub/plants/release-41/fasta/brassica_rapa/dna/). The assembly is described in [The Brassica rapa Genome Sequencing Project Consortium  (2011)](https://www.nature.com/articles/ng.919)
-" class="reference">Brassica rapa ssp. pekinensis line Chiifu 401-42
-                            </option>
-                            <option value="Rye (Secale cereale L.) inbred line Lo7 v2" data-descriptipn="The scaffolds  were constructed using the Whole Genome Shotgun (WGS) assembly of Lo7.  To link WGS contigs the scaffolding software SSPACE (version 2.3) was used.  The assmebly contains 1.29 million scaffolds with a cumulative length of 2.8 Gbp. Reference sequence available from [IPK](https://doi.org/10.5447/IPK/2016/56). The assembly is described in [Bauer, E. et al (2014)](https://doi.org/10.1111/tpj.13436)
-" class="reference">Rye (Secale cereale L.) inbred line Lo7 v2
-                            </option>
-                            <option value="Durum wheat genome (cv. Svevo)" data-descriptipn="An international consortium has generated a high quality reference sequence of the modern durum wheat cultivar Svevo. Whole genome libraries were sequenced with Illumina short paired-end (2 x 250 bp) and long mate pair (up to 8-10 kb)  protocols and the reads were assembly with the NR-Gene DeNovoMAGICTM pipeline. In total, a 270x coverage was obtained,  and the reads were assembled into 10.5 Gb of sequence with an L50 and L90 length of 6 and 1 Mb, respectively (N50: 493; N90: 2019).  The assembly scaffolds have been anchored to a high-density genetic map based on Svevo × Zavitan RIL population and merged  into super-scaffolds using Hi-C data; 95% of the scaffolds have been anchored along the chromosomes and 90% oriented.  Reference sequence available in [InterOmics](https://www.interomics.eu/durum-wheat-genome)
-" class="reference">Durum wheat genome (cv. Svevo)
-                            </option>
-                            <option value="Triticum urartu (Tu2.0)" data-descriptipn="Triticum urartu (AA) is the diploid progenitor of tetraploid and hexaploid wheat.  This assembly is based on T. urartu accession G1812 (PI428198).  A previous draft assembly ( [Ling et al., 2013](https://doi.org/10.1038/nature11997) ),  created using Illumina HiSeq2000 WGS short reads, was improved using BAC-by-BAC sequencing,  SMRT sequencing, a BioNano genome map, and 10x Genomics linked reads into a chromosome level assembly  of T. urartu ( [Ling et al., 2018](https://doi.org/10.1038/s41586-018-0108-0) ). [MBKbase](http://www.mbkbase.org/Tu/).
-" class="reference">Triticum urartu (Tu2.0)
-                            </option>
-                            <option value="Wheat cv Chinese Spring RefSeq v1.0" data-descriptipn="A whole genome assembly has been carried out by the IWGSC in collaboration with the company NRGene.  Using a proprietary algorithm DeNovoMAGIC with Illumina sequencing data a 14.5 Gb assembly was produced.  Sequences have been ordered using POPSEQ data and Hi-C (chromosome conformation capture) to generate 21  pseudomolecules representing the majority of the wheat genome. Reference sequence available in URGI  The assembly is described in [IWGSC (2018)](https://doi.org/10.1126/science.aar7191). Reference sequence  available in [ensembl plants](https://plants.ensembl.org/Triticum_aestivum/Info/Index)  ([reference file](ftp://ftp.ensemblgenomes.org/pub/plants/release-43/fasta/triticum_aestivum/dna/Triticum_aestivum.IWGSC.dna_rm.toplevel.fa.gz)) The repeats are masked to avoid multiple hits in repetitive regions.
-" class="reference">Wheat cv Chinese Spring RefSeq v1.0
-                            </option>
-                            <option value="Triticum aestivum (cv. Paragon)" data-descriptipn="The assembly is done with the pipeline described in  Clavijo, Venturini et al. 2017 10.1101/gr.217117.116 , filtering non-wheat sequences and scaffolds below 1 kbp. The assembly is available in the [grassroots portal](https://opendata.earlham.ac.uk/wheat/under_license/toronto/Clavijo_2017-04-25_Wheat-LoLa/) This assembly is part of a BBSRC strategic longer and larger (sLoLa) grant award between Earlham Institute (EI), John Innes Centre (JIC), European Bioinformatics Institute (EBI) and Rothamsted Research (RRes). To find the scaffold where your markers are, you can blast the sequence [here](https://wheatis.tgac.ac.uk/grassroots-portal/blast).
-" class="reference">Triticum aestivum (cv. Paragon)
-                            </option>
-                            <option value="Triticum aestivum (cv. Cadenza)" data-descriptipn="The assembly is done with the pipeline described in  Clavijo, Venturini et al. 2017 10.1101/gr.217117.116 , filtering non-wheat sequences and scaffolds below 1 kbp. The assembly is available in the [grassroots portal](https://opendata.earlham.ac.uk/wheat/under_license/toronto/Clavijo_2017-04-25_Wheat-LoLa/) This assembly is part of a BBSRC strategic longer and larger (sLoLa) grant award between Earlham Institute (EI), John Innes Centre (JIC), European Bioinformatics Institute (EBI) and Rothamsted Research (RRes). To find the scaffold where your markers are, you can blast the sequence [here](https://wheatis.tgac.ac.uk/grassroots-portal/blast).
-" class="reference">Triticum aestivum (cv. Cadenza)
-                            </option>
-                            <option value="Triticum aestivum (cv. Robigus)" data-descriptipn="The assembly is done with the pipeline described in  Clavijo, Venturini et al. 2017 10.1101/gr.217117.116 , filtering non-wheat sequences and scaffolds below 1 kbp. The assembly is available in the [grassroots portal](https://opendata.earlham.ac.uk/wheat/under_license/toronto/Clavijo_2017-04-25_Wheat-LoLa/) This assembly is part of a BBSRC strategic longer and larger (sLoLa) grant award between Earlham Institute (EI), John Innes Centre (JIC), European Bioinformatics Institute (EBI) and Rothamsted Research (RRes). To find the scaffold where your markers are, you can blast the sequence [here](https://wheatis.tgac.ac.uk/grassroots-portal/blast).
-" class="reference">Triticum aestivum (cv. Robigus)
-                            </option>
-                            <option value="Triticum aestivum (cv. Claire)" data-descriptipn="The assembly is done with the pipeline described in  Clavijo, Venturini et al. 2017 10.1101/gr.217117.116 , filtering non-wheat sequences and scaffolds below 1 kbp. The assembly is available in the [grassroots portal](https://opendata.earlham.ac.uk/wheat/under_license/toronto/Clavijo_2017-04-25_Wheat-LoLa/) This assembly is part of a BBSRC strategic longer and larger (sLoLa) grant award between Earlham Institute (EI), John Innes Centre (JIC), European Bioinformatics Institute (EBI) and Rothamsted Research (RRes). To find the scaffold where your markers are, you can blast the sequence [here](https://wheatis.tgac.ac.uk/grassroots-portal/blast).
-" class="reference">Triticum aestivum (cv. Claire)
-                            </option>
-                            <option value="Triticum turgidum (cv. Kronos)" data-descriptipn="The assembly is done with the pipeline described in  Clavijo, Venturini et al. 2017 10.1101/gr.217117.116 , filtering non-wheat sequences and scaffolds below 1 kbp. The assembly is available in the [grassroots portal](https://opendata.earlham.ac.uk/wheat/under_license/toronto/Clavijo_2017-04-25_Wheat-LoLa/) This assembly is part of a BBSRC strategic longer and larger (sLoLa) grant award between Earlham Institute (EI), John Innes Centre (JIC), European Bioinformatics Institute (EBI) and Rothamsted Research (RRes). To find the scaffold where your markers are, you can blast the sequence [here](https://wheatis.tgac.ac.uk/grassroots-portal/blast).
-" class="reference">Triticum turgidum (cv. Kronos)
-                            </option>
-                            <option value="Wheat cv Chinese Spring RefSeq v1.0 (Full sequence)" data-descriptipn="A whole genome assembly has been carried out by the IWGSC in collaboration with the company NRGene.  Using a proprietary algorithm DeNovoMAGIC with Illumina sequencing data a 14.5 Gb assembly was produced.  Sequences have been ordered using POPSEQ data and Hi-C (chromosome conformation capture) to generate 21 pseudomolecules  representing the majority of the wheat genome. Reference sequence available in [URGI](https://wheat-urgi.versailles.inra.fr/Seq-Repository/Annotations) The assembly is described in [IWGSC (2018)](https://doi.org/10.1126/science.aar7191).
-" class="reference">Wheat cv Chinese Spring RefSeq v1.0 (Full sequence)
-                            </option>
-                            <option value="Triticum aestivum, Fielder, 201216" data-descriptipn="Triticum aestivum, Fielder, 201216
-" class="reference">Triticum aestivum, Fielder, 201216
-                            </option>
-                            <option value="Triticum turgidum, Kronos, v1.1" data-descriptipn="Triticum turgidum, Kronos, v1.1
-" class="reference">Triticum turgidum, Kronos, v1.1
-                            </option>
-                            <option value="Triticum aestivum, Chinese Spring, IWGSC v2.1" data-descriptipn="Triticum aestivum, Chinese Spring, IWGSC v2.1
-" class="reference">Triticum aestivum, Chinese Spring, IWGSC v2.1
-                            </option>
-                        </select> <br/><br/>
-                        <div class="refDesContainer">
-                            <p>Glycine max var. Williams 82 was sequenced, assembled, and annotated by the U.S. DOE
-                                Joint Genome Institute (JGI-PGF) in collaboration with a consortium of research labs and
-                                published. Current assembly is version v2.1 and comprises a total 978 Mb The reference
-                                sequence is available in <a
-                                        href="ftp://ftp.ensemblgenomes.org/pub/plants/release-50/fasta/glycine_max/dna/">Ensembl
-                                    plants Relase 50</a>. The version of the assembly used has the repeats masked
-                                (Glycine_max.Glycine_max_v2.1.dna_rm.toplevel.fa). </p>
 
-                            <p>The barley genome assembly presented here was produced by the <a
-                                    href="http://barleygenome.org/">International Barley Genome Sequencing Consortium
-                                (IBSC)</a> using a <a href="http://europepmc.org/abstract/MED/28447635">hierarchical
-                                approach</a>. Initially multiplexed short read BAC by BAC contig assemblies (N50: 79 kb)
-                                were scaffolded using physical, genetic and optical maps (N50: 1.9 Mb) and were assigned
-                                to chromosomes using a POPSEQ genetic map. Finally, the linear order and orientation of
-                                scaffold sequences was determined using <a
-                                        href="http://wikipedia.org/wiki/Chromosome_conformation_capture">chromosome-conformation
-                                    capture sequencing (Hi-C)</a>.
-                                The final chromosome-scale assembly consisted of 6,347 ordered super-scaffolds composed
-                                of merged assemblies of individual BACs, representing 4.79 Gb (~95%) of the genomic
-                                sequence content, of which 4.54 Gb have beenassigned to precise chromosomal locations in
-                                the Hi-C map.
-                                The chloroplast genome component and its gene annotation are also present (<a
-                                        href="http://www.ebi.ac.uk/ena/data/view/JQ754651">KC912687</a>).
-                                The assembly and description where downloaded from <a href="http://plants.ensembl.org">ensembl!</a>
-                            </p>
+                        <select name="reference" id="reference">
+                            {% for reference in references %}
+                            <option value="{{ reference[1] }}">{{ reference[1] }}</option>
+                            {% endfor %}
+                        </select>
+                        <br/><br/>
+                        <div id="ref_output" class="refDesContainer"></div>
+                        <script type="text/javascript">
 
-                            <p>Tetraploid reference produced by substracting the D genome from the hexaploid wheat. A
-                                whole genome assembly has been carried out by the IWGSC in collaboration with the
-                                company NRGene. Using a proprietary algorithm DeNovoMAGIC with Illumina sequencing data
-                                a 14.5 Gb assembly was produced. Sequences have been ordered using POPSEQ data and Hi-C
-                                (chromosome conformation capture) to generate 21 pseudomolecules representing the
-                                majority of the wheat genome. Reference sequence available in <a
-                                        href="https://wheat-urgi.versailles.inra.fr/Seq-Repository/Assemblies">URGI</a>
-                                The assembly is described in <a href="https://doi.org/10.1126/science.aar7191">IWGSC
-                                    (2018)</a>.</p>
+                            var selectElement = document.getElementById('reference');
+                            var divElement = document.getElementById('ref_output');
 
-                            <p>The assembly was produced with a misture of Sanger BAC libraries, GS FLX Titanium (450bp)
-                                and Illumina HiSeq (100bp) and assembled with SOAP. The scaffolds where assigned to
-                                their corresponding genome by comparing the diploid progenitors and the scaffolds where
-                                anchored with the aid of genetic maps. Reference sequence available in <a
-                                        href="http://www.genoscope.cns.fr/brassicanapus/data/">genoscope</a>. The
-                                assembly is described in <a href="https://doi.org/10.1126/science.1253435">Chalhoub, B.
-                                    et al (2014)</a></p>
+                            selectElement.onchange = function () {
+                                var selectedValue = selectElement.options[selectElement.selectedIndex].value;
+                                if (selectedValue == '-- EMPTY --') {
+                                    divElement.innerHTML = '<p>invalid selection</p>';
+                                }
+                                {% for reference in references %}
+                                else if (selectedValue == '{{ reference[1] }}') {
+                                    var ref_html = `{{ reference[4]|safe }}`;
+                                    divElement.innerHTML = ref_html;
+                                }
+                                {% endfor %}
+                            };
 
-                            <p>The genomic sequence within this version of Ensembl includes 33,459 scaffolds (&gt;200
-                                bp) with an N50 of 850 kb that was assembled at NRC-Saskatoon using a hybrid approach
-                                from Illumina, Roche 454 and Sanger sequence data. The assembly has been orientated and
-                                assigned to the nine pseudochromosomes using dense genotype-by-sequencing genetic maps.
-                                Reference sequence available in <a
-                                        href="http://plants.ensembl.org/Brassica_oleracea/Info/Index">ensembl!</a><a
-                                        href="ftp://ftp.ensemblgenomes.org/pub/plants/release-41/fasta/brassica_oleracea/dna/">fasta</a>.
-                                The assembly is described in <a href="https://doi.org/10.1186/gb-2014-15-6-r77">Parkin,
-                                    I. et al (2014)</a></p>
+                            selectElement.onchange();
 
-                            <p>The genomic sequence within this version of Ensembl includes 193 large scaffolds
-                                assembled by CAAS-IVF, which have been orientated and assigned to pseudochromosomes
-                                using publicly available genetic markers. Reference sequence available in <a
-                                        href="http://plants.ensembl.org/Brassica_rapa/Info/Index">ensembl!</a><a
-                                        href="ftp://ftp.ensemblgenomes.org/pub/plants/release-41/fasta/brassica_rapa/dna/">fasta</a>.
-                                The assembly is described in <a href="https://www.nature.com/articles/ng.919">The
-                                    Brassica rapa Genome Sequencing Project Consortium (2011)</a></p>
+                        </script>
 
-                            <p>The scaffolds were constructed using the Whole Genome Shotgun (WGS) assembly of Lo7. To
-                                link WGS contigs the scaffolding software SSPACE (version 2.3) was used. The assmebly
-                                contains 1.29 million scaffolds with a cumulative length of 2.8 Gbp. Reference sequence
-                                available from <a href="https://doi.org/10.5447/IPK/2016/56">IPK</a>. The assembly is
-                                described in <a href="https://doi.org/10.1111/tpj.13436">Bauer, E. et al (2014)</a></p>
-
-                            <p>An international consortium has generated a high quality reference sequence of the modern
-                                durum wheat cultivar Svevo. Whole genome libraries were sequenced with Illumina short
-                                paired-end (2 x 250 bp) and long mate pair (up to 8-10 kb) protocols and the reads were
-                                assembly with the NR-Gene DeNovoMAGICTM pipeline. In total, a 270x coverage was
-                                obtained, and the reads were assembled into 10.5 Gb of sequence with an L50 and L90
-                                length of 6 and 1 Mb, respectively (N50: 493; N90: 2019). The assembly scaffolds have
-                                been anchored to a high-density genetic map based on Svevo × Zavitan RIL population and
-                                merged into super-scaffolds using Hi-C data; 95% of the scaffolds have been anchored
-                                along the chromosomes and 90% oriented. Reference sequence available in <a
-                                        href="https://www.interomics.eu/durum-wheat-genome">InterOmics</a></p>
-
-                            <p>Triticum urartu (AA) is the diploid progenitor of tetraploid and hexaploid wheat. This
-                                assembly is based on T. urartu accession G1812 (PI428198). A previous draft assembly (
-                                <a href="https://doi.org/10.1038/nature11997">Ling et al., 2013</a> ), created using
-                                Illumina HiSeq2000 WGS short reads, was improved using BAC-by-BAC sequencing, SMRT
-                                sequencing, a BioNano genome map, and 10x Genomics linked reads into a chromosome level
-                                assembly of T. urartu ( <a href="https://doi.org/10.1038/s41586-018-0108-0">Ling et al.,
-                                    2018</a> ). <a href="http://www.mbkbase.org/Tu/">MBKbase</a>.</p>
-
-                            <p>A whole genome assembly has been carried out by the IWGSC in collaboration with the
-                                company NRGene. Using a proprietary algorithm DeNovoMAGIC with Illumina sequencing data
-                                a 14.5 Gb assembly was produced. Sequences have been ordered using POPSEQ data and Hi-C
-                                (chromosome conformation capture) to generate 21 pseudomolecules representing the
-                                majority of the wheat genome. Reference sequence available in URGI The assembly is
-                                described in <a href="https://doi.org/10.1126/science.aar7191">IWGSC (2018)</a>.
-                                Reference sequence available in <a
-                                        href="https://plants.ensembl.org/Triticum_aestivum/Info/Index">ensembl
-                                    plants</a> (<a
-                                        href="ftp://ftp.ensemblgenomes.org/pub/plants/release-43/fasta/triticum_aestivum/dna/Triticum_aestivum.IWGSC.dna_rm.toplevel.fa.gz">reference
-                                    file</a>) The repeats are masked to avoid multiple hits in repetitive regions. </p>
-
-                            <p>The assembly is done with the pipeline described in Clavijo, Venturini et al. 2017
-                                10.1101/gr.217117.116 , filtering non-wheat sequences and scaffolds below 1 kbp. The
-                                assembly is available in the <a
-                                        href="https://opendata.earlham.ac.uk/wheat/under_license/toronto/Clavijo_2017-04-25_Wheat-LoLa/">grassroots
-                                    portal</a> This assembly is part of a BBSRC strategic longer and larger (sLoLa)
-                                grant award between Earlham Institute (EI), John Innes Centre (JIC), European
-                                Bioinformatics Institute (EBI) and Rothamsted Research (RRes). To find the scaffold
-                                where your markers are, you can blast the sequence <a
-                                        href="https://wheatis.tgac.ac.uk/grassroots-portal/blast">here</a>.</p>
-
-                            <p>The assembly is done with the pipeline described in Clavijo, Venturini et al. 2017
-                                10.1101/gr.217117.116 , filtering non-wheat sequences and scaffolds below 1 kbp. The
-                                assembly is available in the <a
-                                        href="https://opendata.earlham.ac.uk/wheat/under_license/toronto/Clavijo_2017-04-25_Wheat-LoLa/">grassroots
-                                    portal</a> This assembly is part of a BBSRC strategic longer and larger (sLoLa)
-                                grant award between Earlham Institute (EI), John Innes Centre (JIC), European
-                                Bioinformatics Institute (EBI) and Rothamsted Research (RRes). To find the scaffold
-                                where your markers are, you can blast the sequence <a
-                                        href="https://wheatis.tgac.ac.uk/grassroots-portal/blast">here</a>.</p>
-
-                            <p>The assembly is done with the pipeline described in Clavijo, Venturini et al. 2017
-                                10.1101/gr.217117.116 , filtering non-wheat sequences and scaffolds below 1 kbp. The
-                                assembly is available in the <a
-                                        href="https://opendata.earlham.ac.uk/wheat/under_license/toronto/Clavijo_2017-04-25_Wheat-LoLa/">grassroots
-                                    portal</a> This assembly is part of a BBSRC strategic longer and larger (sLoLa)
-                                grant award between Earlham Institute (EI), John Innes Centre (JIC), European
-                                Bioinformatics Institute (EBI) and Rothamsted Research (RRes). To find the scaffold
-                                where your markers are, you can blast the sequence <a
-                                        href="https://wheatis.tgac.ac.uk/grassroots-portal/blast">here</a>.</p>
-
-                            <p>The assembly is done with the pipeline described in Clavijo, Venturini et al. 2017
-                                10.1101/gr.217117.116 , filtering non-wheat sequences and scaffolds below 1 kbp. The
-                                assembly is available in the <a
-                                        href="https://opendata.earlham.ac.uk/wheat/under_license/toronto/Clavijo_2017-04-25_Wheat-LoLa/">grassroots
-                                    portal</a> This assembly is part of a BBSRC strategic longer and larger (sLoLa)
-                                grant award between Earlham Institute (EI), John Innes Centre (JIC), European
-                                Bioinformatics Institute (EBI) and Rothamsted Research (RRes). To find the scaffold
-                                where your markers are, you can blast the sequence <a
-                                        href="https://wheatis.tgac.ac.uk/grassroots-portal/blast">here</a>.</p>
-
-                            <p>The assembly is done with the pipeline described in Clavijo, Venturini et al. 2017
-                                10.1101/gr.217117.116 , filtering non-wheat sequences and scaffolds below 1 kbp. The
-                                assembly is available in the <a
-                                        href="https://opendata.earlham.ac.uk/wheat/under_license/toronto/Clavijo_2017-04-25_Wheat-LoLa/">grassroots
-                                    portal</a> This assembly is part of a BBSRC strategic longer and larger (sLoLa)
-                                grant award between Earlham Institute (EI), John Innes Centre (JIC), European
-                                Bioinformatics Institute (EBI) and Rothamsted Research (RRes). To find the scaffold
-                                where your markers are, you can blast the sequence <a
-                                        href="https://wheatis.tgac.ac.uk/grassroots-portal/blast">here</a>.</p>
-
-                            <p>A whole genome assembly has been carried out by the IWGSC in collaboration with the
-                                company NRGene. Using a proprietary algorithm DeNovoMAGIC with Illumina sequencing data
-                                a 14.5 Gb assembly was produced. Sequences have been ordered using POPSEQ data and Hi-C
-                                (chromosome conformation capture) to generate 21 pseudomolecules representing the
-                                majority of the wheat genome. Reference sequence available in <a
-                                        href="https://wheat-urgi.versailles.inra.fr/Seq-Repository/Annotations">URGI</a>
-                                The assembly is described in <a href="https://doi.org/10.1126/science.aar7191">IWGSC
-                                    (2018)</a>.</p>
-
-                            <p>Triticum aestivum, Fielder, 201216</p>
-
-                            <p>Triticum turgidum, Kronos, v1.1 </p>
-
-                            <p>Triticum aestivum, Chinese Spring, IWGSC v2.1</p>
-
-                        </div>
                     </div>
                 </div>
 
                 <br/>
                 <br/>
                 <div class="emailContainer">
-                    <label for="snp_file_email">Email</label>
-                    <input type="email" class="form-control" name="snp_file[email]" id="snp_file_email"/> (optional)
+                    <label for="email">Email</label>
+                    <input type="email" class="form-control" id="email" name="email">(optional)
                 </div>
                 <br/>
                 <br/>
                 <br/>
-                <input type="submit" name="commit" value="Create Primers" data-disable-with="Create Primers"/>
+                <input type=submit value="Create Primers">
+
                 <br/>
 
                 Your email will only be used to send you updates in the status of your job and will be deleted upon
                 completion.
+
 
             </form>
             <br/>

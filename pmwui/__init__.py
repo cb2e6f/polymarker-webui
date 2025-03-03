@@ -15,6 +15,10 @@ from werkzeug.utils import secure_filename
 
 from .db import *
 
+import markdown
+
+from flask_mail import Mail, Message
+
 # from post_process_masks import post_process_masks
 
 
@@ -26,8 +30,17 @@ app = Flask(__name__)
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 app.secret_key = b'_5#y2L"F4Q8z\n\xec]/'
 
+app.config['MAIL_SERVER'] = 'webmail.nbi.ac.uk'
+app.config['MAIL_PORT'] = 587
+app.config['MAIL_USERNAME'] = 'polymarker'
+app.config['MAIL_PASSWORD'] = 'Parrot14'
+app.config['MAIL_USE_TLS'] = True
+app.config['MAIL_USE_SSL'] = False
+
+mail = Mail(app)
 
 e = threading.Event()
+
 
 def allowed_file(filename):
     return '.' in filename and \
@@ -37,10 +50,16 @@ def allowed_file(filename):
 def get_references():
     connection = connect()
     cursor = connection.cursor()
-    cursor.execute("SELECT id, name FROM reference")
+    cursor.execute("SELECT id, name, description, example FROM reference")
     references = cursor.fetchall()
     connection.close()
-    return references
+
+    proc_ref = []
+
+    for r in references:
+        proc_ref.append(r + (markdown.markdown(r[2]),))
+
+    return proc_ref
 
 
 # # Define a route for the home page
@@ -53,6 +72,20 @@ def get_references():
 @app.route('/greet/<name>')
 def greet(name):
     return f'Hello, {name}!'
+
+
+def send_massage(to, uid, status):
+    msg = Message(subject=f'polymarker {uid} {status}', sender='polymarker@nbi.ac.uk',
+                  recipients=[to])
+    msg.body = f"""The current status of your request (#{uid}) is #{status}
+The latest status and results (when done) are available in: #results_url"""
+    mail.send(msg)
+
+
+@app.route("/mtest")
+def mtest():
+    send_massage("rob.ellis@jic.ac.uk", 111111, "GOOD")
+    return "Message sent!"
 
 
 def index_ref(path):
@@ -147,6 +180,10 @@ def insert_reference(connection, config):
     VALUES (?, ?, ?, ?, ?, ?)
     """
 
+    print("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
+    print(config["example"])
+    print("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
+
     try:
         cursor.execute(query, (
             config["name"], config["path"], config["genome_count"], config["arm_selection"], config["description"],
@@ -227,6 +264,7 @@ def get_reference_cmd_data(ref_id):
     connection.close()
     return reference
 
+
 def get_query_cmd_data(uid):
     connection = connect()
     cursor = connection.cursor()
@@ -266,7 +304,8 @@ def ref():
 
 @app.route('/about', methods=['GET'])
 def about():
-    return render_template('about.html')
+    references = get_references()
+    return render_template('about.html', references=references)
 
 
 @app.route('/cite', methods=['GET'])
@@ -366,6 +405,7 @@ def index():
     references = get_references()
     return render_template('index.html', references=references)
 
+
 def run_pm(uid):
     ref = get_query_cmd_data(uid)
 
@@ -395,11 +435,10 @@ def run_pm(uid):
     print(os.listdir(app.static_folder))
 
     os.rename(f"{app.static_folder}/data/{uid}_out/exons_genes_and_contigs.fa",
-    f"{app.static_folder}/data/{uid}_out/exons_genes_and_contigs.fa.og")
+              f"{app.static_folder}/data/{uid}_out/exons_genes_and_contigs.fa.og")
 
     post_process_masks(f"{app.static_folder}/data/{uid}_out/exons_genes_and_contigs.fa.og",
-    f"{app.static_folder}/data/{uid}_out/exons_genes_and_contigs.fa")
-
+                       f"{app.static_folder}/data/{uid}_out/exons_genes_and_contigs.fa")
 
 
 @app.route('/2', methods=['GET', 'POST'])

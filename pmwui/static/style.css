@@ -6982,3 +6982,9 @@ img.logo {
 
 .container-fluid {
   padding: 0; }
+
+.footer {
+    display:flex;
+    align-items:center;
+    justify-content:space-evenly;
+}

@@ -7,7 +7,7 @@
     which have been orientated and assigned to pseudochromosomes using publicly available genetic markers.
     Reference sequence available in [ensembl!](http://plants.ensembl.org/Brassica_rapa/Info/Index)[fasta](ftp://ftp.ensemblgenomes.org/pub/plants/release-41/fasta/brassica_rapa/dna/).
     The assembly is described in [The Brassica rapa Genome Sequencing Project Consortium  (2011)](https://www.nature.com/articles/ng.919)
-  example: >
+  example: |
     b_rapa_test1,A08,CAAAGACGCTCCAATCCACGACACTTCCGGTGTTGTTTCCATCTCTGACGATGGAAACCTC[G/C]TGGTTACCGATGGTCGAAACCGTCTTATATGGTCGACGAACGTCACGGTACCAGTGGC
     b_rapa_test2,A01,GTTCCTTTCTCTCCATAGATAGTAGATAACTCCTTTCCAGCATAGAAGAATCAAACGCTT[G/C]AAGAGCCTATTTCCACGAAGGGATATCATCTGATTCATCGTTTCCTCCCAGACCGGTGA
     b_rapa_test3,A10,CTCCTTGGAATTTTCAATATTGGCCAGTTGTAAATATGCCAAAATCAGGTCCACCAAGT[T/A]CCCTAAAATTGTAAACTATTGCGCCGGAGAAGAATGTGGATTTGGAGTTTATGTAACTCT

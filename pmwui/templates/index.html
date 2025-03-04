@@ -46,8 +46,8 @@
             <form class="new_snp_file" method="POST" enctype="multipart/form-data">
 
                 <div id="fileInputCont">
-                    <label for="file">File</label>
-                    <input type=file name=file class="form-control-file" id="fileInput">
+                    <label for="query_file">File</label>
+                    <input type=file id="query_file" name="query_file" class="form-control-file">
                 </div>
 
                 <br>
@@ -59,7 +59,7 @@
 
 
                     <label for="text">Manual Input</label>
-                    <textarea class="form-control" id="manualInput" name="text"
+                    <textarea class="form-control" id="text" name="text"
                               placeholder="Enter your input manually"></textarea>
                     <br/>
 
@@ -72,7 +72,7 @@
                     <script type="text/javascript">
 
                         var selectElement = document.getElementById('populateExample');
-                        var divElementq = document.getElementById('manualInput');
+                        var divElementq = document.getElementById('text');
                         var clearElement = document.getElementById('clearInput');
 
 

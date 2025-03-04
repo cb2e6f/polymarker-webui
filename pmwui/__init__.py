@@ -364,7 +364,7 @@ def index():
 
         filename = ''
         if 'file' in request.files:
-            file = request.files['file']
+            file = request.files['query_file']
 
             if file and file.filename != '':
                 filename = secure_filename(file.filename)
@@ -400,7 +400,8 @@ def index():
         print("########################################")
 
         print(f"result: =S")
-        return render_template('result.html', id=uid)
+        # return render_template('result.html', id=uid)
+        return redirect(f'snp_file/{uid}')
 
     references = get_references()
     return render_template('index.html', references=references)
@@ -471,6 +472,20 @@ def index2():
 
     references = get_references()
     return render_template('index.html', references=references)
+
+@app.route('/snp_file/<string:post_id>')
+def show_post(post_id):
+    # show the post with the given id, the id is an integer
+    print(post_id)
+    status = "init"
+    try:
+        with open(f"{app.static_folder}/data/{post_id}_out/status.txt", 'r') as f:
+            lines = f.read().splitlines()
+            status = lines[-1]
+    except FileNotFoundError:
+        print("status file not ready")
+
+    return render_template('res.html', id=post_id, status=status)
 
 
 def worker(cv, s):

@@ -439,8 +439,16 @@ def post_process_masks(src, des):
 @app.route('/', methods=['GET', 'POST'])
 def index():
     if request.method == 'POST':
+        # print(request.form)
         reference = request.form['reference']
-        text = request.form['text']
+
+
+        if "text" in request.form:
+            text = request.form['text']
+        else:
+            text = ''
+
+
 
         filename = ''
         if 'file' in request.files:

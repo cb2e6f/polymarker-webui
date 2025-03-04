@@ -72,6 +72,16 @@ def update(cmd, status):
     db.close()
 
 
+def count():
+    db = open_db()
+    cursor = db.cursor()
+    cursor.execute("SELECT COUNT(*) FROM cmd_queue")
+    qcount = cursor.fetchone()[0]
+    cursor.close()
+    db.close()
+    return qcount
+
+
 def delete(cmd):
     db = open_db()
     cursor = db.cursor()

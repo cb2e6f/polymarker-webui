@@ -1,4 +1,5 @@
 import datetime
+import shutil
 import sys
 import threading
 from asyncio import sleep
@@ -11,7 +12,7 @@ import os
 import subprocess
 import uuid
 
-from flask import Flask, flash, request, redirect, jsonify, render_template, url_for
+from flask import Flask, flash, request, redirect, jsonify, render_template, url_for, abort
 from werkzeug.utils import secure_filename
 
 from .db import *
@@ -211,12 +212,7 @@ def insert_query(connection, uid, reference, email, date):
     except mariadb.Error as e:
         print(f"error inserting query: {e}")
 
-def get_query(connection, uid):
-    cursor = connection.cursor()
 
-    query = """
-    SELECT 
-    """
 
 def add(path):
     try:
@@ -292,7 +288,8 @@ def snp_files_json():
     print("########################################")
 
     if email != "":
-        send_massage(email, uid, "New", request.base_url)
+        pass
+        # send_massage(email, uid, "New", request.base_url)
 
     print(f"result: =S")
 
@@ -315,7 +312,7 @@ def done():
             lines = f.read().splitlines()
             status = lines[-1]
             print(status)
-            send_massage(ref[1], uid, status,"http://127.0.0.1:5000/")
+            # send_massage(ref[1], uid, status,"http://127.0.0.1:5000/")
 
     return jsonify({"status": "DONE"})
 
@@ -483,7 +480,8 @@ def index():
         print("########################################")
 
         if email != "":
-            send_massage(email, uid, "New", request.base_url)
+            pass
+            # send_massage(email, uid, "New", request.base_url)
 
         print(f"result: =S")
         # return render_template('result.html', id=uid)
@@ -531,41 +529,23 @@ def run_pm(uid):
 
     rest_done(uid)
 
-@app.route('/2', methods=['GET', 'POST'])
-def index2():
-    if request.method == 'POST':
-        flash("You've been posted")
-        print(request.files)
-        print(request.form)
-
-        print(request.files['file'].filename)
-
-        # reference = request.form['reference']
-        # text = request.form['text']
-        # email = request.form['email']
-
-        # check if the post request has the file part
-        if 'file' not in request.files:
-            flash('No file part, how did we get here?')
-            return redirect(request.url)
-        file = request.files['file']
-        # If the user does not select a file, the browser submits an
-        # empty file without a filename.
-        if file.filename == '':
-            flash('No selected file')
-            return redirect(request.url)
-        if file and allowed_file(file.filename):
-            filename = secure_filename(file.filename)
-            file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
-            return redirect(request.url)
-
-    references = get_references()
-    return render_template('index.html', references=references)
-
 @app.route('/snp_file/<string:post_id>')
 def show_post(post_id):
     # show the post with the given id, the id is an integer
     print(post_id)
+
+    ref = get_query_cmd_data(post_id)
+
+    print("%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%")
+    print(ref)
+    print("%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%")
+
+
+
+    if ref is None:
+        abort(404)
+
+
     status = "init"
     try:
         with open(f"{app.static_folder}/data/{post_id}_out/status.txt", 'r') as f:
@@ -574,7 +554,7 @@ def show_post(post_id):
     except FileNotFoundError:
         print("status file not ready")
 
-    return render_template('res.html', id=post_id, status=status)
+    return render_template('res.html', id=post_id, status=status, qcount=db.count())
 
 
 def remove_old():
@@ -594,17 +574,12 @@ def remove_old():
         print(datetime.datetime.fromisoformat(e[2]))
         if datetime.datetime.fromisoformat(e[2]) < one_hour_ago:
             cursor.execute("DELETE FROM query WHERE id = ?", (e[0],))
+            print("DELETE FROM query WHERE id = ?", (e[0],))
+            shutil.rmtree(f"{app.static_folder}/data/{e[1]}_out")
+            print(f"{app.static_folder}/data/{e[1]}_out")
+            print(f"{cursor.rowcount} rows were deleted.")
+            connection.commit()
 
-
-
-
-    # Commit the transaction
-    # connection.commit()
-
-    # Output the number of rows deleted
-    # print(f"{cursor.rowcount} rows were deleted.")
-
-    # Close the cursor and connection
     cursor.close()
     connection.close()
 
@@ -641,8 +616,13 @@ def main():
             init_db()
             exit(0)
 
-    remove_old()
-    exit()
+    # remove_old()
+    # exit()
+
+
+    print("££££££££££££££££")
+    print(db.count())
+    print("££££££££££££££££")
 
     print("#######################")
     connection = connect()

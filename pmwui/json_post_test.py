@@ -14,6 +14,7 @@ pm_test_data = {
     }
 }
 
-r = requests.post(url, json=pm_test_data)
-r.raise_for_status()
-print(r.json())
+for i in range(1, 10):
+    r = requests.post(url, json=pm_test_data)
+    r.raise_for_status()
+    print(r.json())

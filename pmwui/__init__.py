@@ -382,6 +382,14 @@ def ref():
     return render_template('ref.html', references=references, message=message)
 
 
+@app.route('/test', methods=['GET'])
+def test():
+    references = get_references()
+    # return render_template('about.html', references=references)
+
+
+
+
 @app.route('/about', methods=['GET'])
 def about():
     references = get_references()
@@ -583,13 +591,23 @@ def remove_old():
         if datetime.datetime.fromisoformat(e[2]) < one_hour_ago:
             cursor.execute("DELETE FROM query WHERE id = ?", (e[0],))
             print("DELETE FROM query WHERE id = ?", (e[0],))
-            shutil.rmtree(f"{app.static_folder}/data/{e[1]}_out")
-            print(f"{app.static_folder}/data/{e[1]}_out")
+            try:
+                shutil.rmtree(f"{app.static_folder}/data/{e[1]}_out")
+                print(f"{app.static_folder}/data/{e[1]}_out")
+            except FileNotFoundError:
+                print("file not found assume it was never created")
             print(f"{cursor.rowcount} rows were deleted.")
             connection.commit()
 
     cursor.close()
     connection.close()
+
+
+
+@app.post('/gc')
+def gc():
+    remove_old()
+    return jsonify({"status": "DONE"})
 
 def worker(cv, s):
     while True:

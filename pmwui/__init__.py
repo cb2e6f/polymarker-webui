@@ -3,6 +3,7 @@ import sys
 import threading
 from asyncio import sleep
 
+import requests
 import yaml
 import yaml.parser
 
@@ -10,7 +11,7 @@ import os
 import subprocess
 import uuid
 
-from flask import Flask, flash, request, redirect, jsonify, render_template
+from flask import Flask, flash, request, redirect, jsonify, render_template, url_for
 from werkzeug.utils import secure_filename
 
 from .db import *
@@ -36,6 +37,7 @@ app.config['MAIL_USERNAME'] = 'polymarker'
 app.config['MAIL_PASSWORD'] = 'Parrot14'
 app.config['MAIL_USE_TLS'] = True
 app.config['MAIL_USE_SSL'] = False
+# app.config['MAIL_DEBUG'] = True
 
 mail = Mail(app)
 
@@ -69,16 +71,16 @@ def get_references():
 
 
 # Define another route for a different page
-@app.route('/greet/<name>')
-def greet(name):
-    return f'Hello, {name}!'
+@app.route('/greet')
+def greet():
+    return f'Hello, {request.url_root}!'
 
 
-def send_massage(to, uid, status):
+def send_massage(to, uid, status, url):
     msg = Message(subject=f'polymarker {uid} {status}', sender='polymarker@nbi.ac.uk',
                   recipients=[to])
-    msg.body = f"""The current status of your request (#{uid}) is #{status}
-The latest status and results (when done) are available in: #results_url"""
+    msg.body = f"""The current status of your request ({uid}) is {status}
+The latest status and results (when done) are available in: {url}snp_file/{uid}"""
     mail.send(msg)
 
 
@@ -209,6 +211,12 @@ def insert_query(connection, uid, reference, email, date):
     except mariadb.Error as e:
         print(f"error inserting query: {e}")
 
+def get_query(connection, uid):
+    cursor = connection.cursor()
+
+    query = """
+    SELECT 
+    """
 
 def add(path):
     try:
@@ -246,6 +254,81 @@ def echo():
     data = request.get_json()
     return jsonify(data)
 
+@app.post('/snp_files.json')
+def snp_files_json():
+    data = request.get_json()
+
+
+    reference = data["snp_file"]["reference"]
+    text = data["polymarker_manual_input"]["post"]
+
+    email = data["snp_file"]['email']
+    uid = uuid.uuid4()
+    reference_id = get_reference_from_name(reference)
+
+    if text != '':
+        filename = f"{uid}.csv"
+        file = open(os.path.join(app.config['UPLOAD_FOLDER'], filename), 'w')
+        file.write(text)
+        file.close()
+
+    print(f"reference: {reference}")
+    print(f"reference_id: {reference_id}")
+    print(f"text: {text}")
+    print(f"filename: {filename}")
+    print(f"email: {email}")
+    print(f"id: {uid}")
+
+    db_connection = connect()
+
+    if db_connection is not None:
+        insert_query(db_connection, uid, reference_id[0], email, datetime.datetime.now())
+
+    submit(uid)
+
+    e.set()
+    e.clear()
+
+    print("########################################")
+
+    if email != "":
+        send_massage(email, uid, "New", request.base_url)
+
+    print(f"result: =S")
+
+    return jsonify({"id": uid, "url": f"http://127.0.0.1:5000/snp_file/{uid}", "path": f"/snp_files/{uid}"})
+
+
+
+@app.post('/done')
+def done():
+    data = request.get_json()
+
+    print(data)
+
+    uid = data["UID"]
+    ref = get_query_cmd_data(uid)
+    print(ref)
+
+    if ref[1] != "":
+        with open(f"{app.static_folder}/data/{uid}_out/status.txt", 'r') as f:
+            lines = f.read().splitlines()
+            status = lines[-1]
+            print(status)
+            send_massage(ref[1], uid, status,"http://127.0.0.1:5000/")
+
+    return jsonify({"status": "DONE"})
+
+def rest_done(uid):
+    url = 'http://127.0.0.1:5000/done'
+
+    data = {
+        "UID": uid
+    }
+
+    r = requests.post(url, json=data)
+    r.raise_for_status()
+    print(r.json())
 
 def get_reference_from_name(name):
     connection = connect()
@@ -268,7 +351,7 @@ def get_reference_cmd_data(ref_id):
 def get_query_cmd_data(uid):
     connection = connect()
     cursor = connection.cursor()
-    cursor.execute("SELECT reference FROM query WHERE uid = %s", (uid,))
+    cursor.execute("SELECT reference, email FROM query WHERE uid = %s", (uid,))
     reference = cursor.fetchone()
     connection.close()
     return reference
@@ -399,6 +482,9 @@ def index():
 
         print("########################################")
 
+        if email != "":
+            send_massage(email, uid, "New", request.base_url)
+
         print(f"result: =S")
         # return render_template('result.html', id=uid)
         return redirect(f'snp_file/{uid}')
@@ -441,6 +527,7 @@ def run_pm(uid):
     post_process_masks(f"{app.static_folder}/data/{uid}_out/exons_genes_and_contigs.fa.og",
                        f"{app.static_folder}/data/{uid}_out/exons_genes_and_contigs.fa")
 
+    rest_done(uid)
 
 @app.route('/2', methods=['GET', 'POST'])
 def index2():

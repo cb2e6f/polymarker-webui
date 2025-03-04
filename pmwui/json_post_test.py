@@ -1,17 +1,16 @@
 import requests
 
-url = 'http://127.0.0.1:5000/echo'
-dat = { 'lang': 'python' }
+url = 'http://127.0.0.1:5000/snp_files.json'
 
 pm_test_data = {
     "snp_file":
     {
-        "reference":"RefSeq v1.0",
-        "email":""
+        "reference":"Wheat cv Chinese Spring RefSeq v1.0",
+        "email":"rob.ellis@jic.ac.uk"
     },
     "polymarker_manual_input":
     {
-        "post":"1DS_1905169_Cadenza0423_2404_C2404T,1D,ccgccgtcgtatggagcaggccggccaattccttcaaggagtcaaccacctggcgcaaggaccatgaggtccatgctcacgaggtctctttcgttgacgg[C/T]aaaaacaagacggcgccaggctttgagttgctcccggctgtggtggatcaccaaggcaacccgcagccgaccttggtggggatccacgttggccatcccaa\n1DS_40060_Cadenza0423_2998_G2998A,1D,ccagcagcgcccgtcccccttctcccccgaatccgccggagcccagcggacgccggccatgagcacctccgagtagtaagtccccggcgccgccgccgcc[G/A]ccgatctttctttctttctcgcttgatttgtctgcgtttcttttgttccgggtgattgattgatgtgcgtgggctgctgcagcgactacctcttcaagctg\n1DS_1847781_Cadenza0423_2703_G2703A,1D,tttcctctcaaatgtagcttctgcagattcggtggaagggcattcaaccggagaacctcattctcatcacttgcggtcacctctaggtaggacaaaaact[G/A]catctgaataagagactcacagaggcgttcacagtagattctcttcacattcaataacctcaggcttctcatttgcctcagctctcccagttgtctaacag"
+        "post": "Cadenza1697.chr1A.12142209,1A,acaacttttcaaaaaataacacacccacaacctaaacacccttaaatatcaacttctgaggggaggcggcaactagtatcaaaaattcaaaatgtggttc[G/C]cacaactagcgttgccgagacaaaaagaaccagcacttccactgctccatgaattcaagaaacagaccgatggcatgtataagaacagacgtgccga\nBA00591935,3B,gcacatcggagagttcgttggaagagcctagcaccgaggaattccaggaggaagatgtctctgatggagattcagactcgaacgacgagagcaaggggcc[G/A]gaagtaaagcttttcatcagcggagtagttcataataaagaggaggctggagcaaaatcttatgttcgagttcccgctgaaataaataacctggaaaggg\nBA00343846,5A,ccacccctcctcttccccatgcagctacaactgaggcaatgctgccgtctgccttctggagttccccgccttcgatctcgagcacgccatccaggacggc[G/A]ttggtatcgaccgccaacctcaatctggatccggttgtggctaatgtacagactaattcccacacaaaacattcattaagttagcattgtctctttttgg\nBA00122841,7D,ttcccaccacacgcttcagcagttccttggctcgcgatgaccccgactcatcatggcagaactgggtccggaggcccccatcaagacccttgtaaatgta[A/G]aagtacactgccagttgttcgctgccgctgttggtggcatggatgagaaggccaaaggggccaagcgcgccgcgttcagtggcaccaccacttgtactgc"
     }
 }
 

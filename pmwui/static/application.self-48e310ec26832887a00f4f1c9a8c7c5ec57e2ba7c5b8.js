@@ -123,33 +123,33 @@
 // Clear input
 	function clearInput(){
 		$( "#clearInput" ).on( "click", function(){
-			$( "#manualInput" ).val('');
-			$( "#manualInput" ).prop('disabled', false);
+			$( "#text" ).val('');
+			$( "#text" ).prop('disabled', false);
 			$( "#populateExample" ).prop('disabled', false);
-			$( "#fileInput" ).val('');
-			$( "#fileInput" ).prop('disabled', false);
+			$( "#query_file" ).val('');
+			$( "#query_file" ).prop('disabled', false);
 		});
 	}
 
 // Check input elements
 	function checkInputElements(){
 
-		$( "#manualInput" ).blur(function(){
-			if($( "#manualInput" ).val() !== ""){				
-				$( "#fileInput" ).prop('disabled', true);
+		$( "#text" ).blur(function(){
+			if($( "#text" ).val() !== ""){
+				$( "#query_file" ).prop('disabled', true);
 			} else {				
-				$( "#fileInput" ).prop('disabled', false);
+				$( "#query_file" ).prop('disabled', false);
 			}
 
 		});	
 
-		$( "#fileInput" ).blur(function(){
+		$( "#query_file" ).blur(function(){
 
-			if($( "#fileInput" ).val() !== ""){				
-				$( "#manualInput" ).prop('disabled', true);
+			if($( "#query_file" ).val() !== ""){
+				$( "#text" ).prop('disabled', true);
 				$( "#populateExample" ).prop('disabled', true);
 			} else {				
-				$( "#manualInput" ).prop('disabled', false);
+				$( "#text" ).prop('disabled', false);
 				$( "#populateExample" ).prop('disabled', false);
 			}
 
@@ -161,14 +161,14 @@
 var ready;
 ready = (function() {	
 
-	idToRefDes();
-	showDescription();
+//	idToRefDes();
+//	showDescription();
 	calculateLogoMargin();
 	spaceLogosDynamically()
 	hideMessage();	
-	populateExample();	
+//	populateExample();
 	checkInputElements();
-	clearInput();	
+	clearInput();
 });
 
 $( window ).on( "load", ready);

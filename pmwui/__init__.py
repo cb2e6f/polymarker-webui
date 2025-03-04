@@ -515,6 +515,8 @@ def run_pm(uid):
 
     print(result)
 
+    db.update_query_status(uid, str(result))
+
     print("_____________")
     print(app.static_folder)
     print("_____________")
@@ -575,14 +577,52 @@ def show_post(post_id):
     return render_template('res.html', id=post_id, status=status)
 
 
+def remove_old():
+    connection = connect()
+    cursor = connection.cursor()
+
+    one_hour_ago = datetime.datetime.now() - datetime.timedelta(minutes=1)
+
+    select_query = "SELECT id, uid, date FROM query"
+    cursor.execute(select_query)
+    entries = cursor.fetchall()
+
+
+    for e in entries:
+        print(e)
+        print(one_hour_ago)
+        print(datetime.datetime.fromisoformat(e[2]))
+        if datetime.datetime.fromisoformat(e[2]) < one_hour_ago:
+            cursor.execute("DELETE FROM query WHERE id = ?", (e[0],))
+
+
+
+
+    # Commit the transaction
+    # connection.commit()
+
+    # Output the number of rows deleted
+    # print(f"{cursor.rowcount} rows were deleted.")
+
+    # Close the cursor and connection
+    cursor.close()
+    connection.close()
+
 def worker(cv, s):
     while True:
         work = db.get(s)
         if work is not None:
             sleep(3)
+            print("^^^^^^^^^^^^^^^^^^^^^^^^^^^")
             print(work)
-            run_pm(work[1])
-            db.update(work[0], "DONE")
+            print("^^^^^^^^^^^^^^^^^^^^^^^^^^^")
+            try:
+                run_pm(work[1])
+            except Exception as e:
+                print(e)
+                db.update_query_status(work[1], "E: " + str(e))
+            # db.update(work[0], "DONE")
+            db.delete(work[0])
         else:
             print("...")
             cv.wait()
@@ -600,6 +640,17 @@ def main():
         elif sys.argv[1] == "init":
             init_db()
             exit(0)
+
+    remove_old()
+    exit()
+
+    print("#######################")
+    connection = connect()
+    cursor = connection.cursor()
+    cursor.execute('UPDATE cmd_queue SET status = "SUB" WHERE status = "GOT"')
+    connection.commit()
+    connection.close()
+    print("#######################")
 
     # e = threading.Event()
     s = threading.Semaphore()

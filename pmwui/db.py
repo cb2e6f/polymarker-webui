@@ -80,6 +80,14 @@ def delete(cmd):
     cursor.close()
     db.close()
 
+def update_query_status(uid, status):
+    db = open_db()
+    cursor = db.cursor()
+    cursor.execute("UPDATE query SET status=? WHERE uid=?", (status, uid))
+    db.commit()
+    cursor.close()
+    db.close()
+
 def worker(cv, s):
     while True:
         work = get(s)

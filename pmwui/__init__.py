@@ -12,7 +12,7 @@ import os
 import subprocess
 import uuid
 
-from flask import Flask, flash, request, redirect, jsonify, render_template, url_for, abort
+from flask import Flask, request, redirect, jsonify, render_template, abort
 from werkzeug.utils import secure_filename
 
 from .db import *
@@ -85,12 +85,6 @@ The latest status and results (when done) are available in: {url}snp_file/{uid}"
     mail.send(msg)
 
 
-@app.route("/mtest")
-def mtest():
-    send_massage("rob.ellis@jic.ac.uk", 111111, "GOOD")
-    return "Message sent!"
-
-
 def index_ref(path):
     print(f"path ===== {path}")
     print("indexing")
@@ -125,8 +119,8 @@ def connect():
             database="polymarker_webui"
         )
         return connection
-    except mariadb.Error as e:
-        print(f"error connecting to mariadb: {e}")
+    except mariadb.Error as exception:
+        print(f"error connecting to mariadb: {exception}")
         return None
 
 
@@ -149,8 +143,8 @@ def create_reference_table(connection):
         cursor.execute(query)
         connection.commit()
         print(f"created reference table: {query}")
-    except mariadb.Error as e:
-        print(f"error creating reference table: {e}")
+    except mariadb.Error as exception:
+        print(f"error creating reference table: {exception}")
 
 
 def create_query_table(connection):
@@ -171,8 +165,8 @@ def create_query_table(connection):
         cursor.execute(query)
         connection.commit()
         print(f"created query table: {query}")
-    except mariadb.Error as e:
-        print(f"error creating query table: {e}")
+    except mariadb.Error as exception:
+        print(f"error creating query table: {exception}")
 
 
 def insert_reference(connection, config):
@@ -193,8 +187,8 @@ def insert_reference(connection, config):
             config["example"]))
         connection.commit()
         print(f"inserted reference: {query}")
-    except mariadb.Error as e:
-        print(f"error inserting reference: {e}")
+    except mariadb.Error as exception:
+        print(f"error inserting reference: {exception}")
 
 
 def insert_query(connection, uid, reference, email, date):
@@ -209,9 +203,8 @@ def insert_query(connection, uid, reference, email, date):
         cursor.execute(query, (uid, reference, email, date))
         connection.commit()
         print(f"inserted query: {query}")
-    except mariadb.Error as e:
-        print(f"error inserting query: {e}")
-
+    except mariadb.Error as exception:
+        print(f"error inserting query: {exception}")
 
 
 def add(path):
@@ -250,10 +243,10 @@ def echo():
     data = request.get_json()
     return jsonify(data)
 
+
 @app.post('/snp_files.json')
 def snp_files_json():
     data = request.get_json()
-
 
     reference = data["snp_file"]["reference"]
     text = data["polymarker_manual_input"]["post"]
@@ -261,6 +254,7 @@ def snp_files_json():
     email = data["snp_file"]['email']
     uid = uuid.uuid4()
     reference_id = get_reference_from_name(reference)
+    filename = ""
 
     if text != '':
         filename = f"{uid}.csv"
@@ -268,33 +262,9 @@ def snp_files_json():
         file.write(text)
         file.close()
 
-    print(f"reference: {reference}")
-    print(f"reference_id: {reference_id}")
-    print(f"text: {text}")
-    print(f"filename: {filename}")
-    print(f"email: {email}")
-    print(f"id: {uid}")
-
-    db_connection = connect()
-
-    if db_connection is not None:
-        insert_query(db_connection, uid, reference_id[0], email, datetime.datetime.now())
-
-    submit(uid)
-
-    e.set()
-    e.clear()
-
-    print("########################################")
-
-    if email != "":
-        pass
-        # send_massage(email, uid, "New", request.base_url)
-
-    print(f"result: =S")
+    submit_query(email, filename, reference, reference_id, text, uid)
 
     return jsonify({"id": uid, "url": f"http://127.0.0.1:5000/snp_file/{uid}", "path": f"/snp_files/{uid}"})
-
 
 
 @app.post('/done')
@@ -304,10 +274,10 @@ def done():
     print(data)
 
     uid = data["UID"]
-    ref = get_query_cmd_data(uid)
-    print(ref)
+    query_ref = get_query_cmd_data(uid)
+    print(query_ref)
 
-    if ref[1] != "":
+    if query_ref[1] != "":
         with open(f"{app.static_folder}/data/{uid}_out/status.txt", 'r') as f:
             lines = f.read().splitlines()
             status = lines[-1]
@@ -315,6 +285,7 @@ def done():
             # send_massage(ref[1], uid, status,"http://127.0.0.1:5000/")
 
     return jsonify({"status": "DONE"})
+
 
 def rest_done(uid):
     url = 'http://127.0.0.1:5000/done'
@@ -326,6 +297,7 @@ def rest_done(uid):
     r = requests.post(url, json=data)
     r.raise_for_status()
     print(r.json())
+
 
 def get_reference_from_name(name):
     connection = connect()
@@ -380,14 +352,6 @@ def ref():
     references = get_references()
 
     return render_template('ref.html', references=references, message=message)
-
-
-@app.route('/test', methods=['GET'])
-def test():
-    references = get_references()
-    # return render_template('about.html', references=references)
-
-
 
 
 @app.route('/about', methods=['GET'])
@@ -450,13 +414,10 @@ def index():
         # print(request.form)
         reference = request.form['reference']
 
-
         if "text" in request.form:
             text = request.form['text']
         else:
             text = ''
-
-
 
         filename = ''
         if 'file' in request.files:
@@ -476,30 +437,7 @@ def index():
             file.write(text)
             file.close()
 
-        print(f"reference: {reference}")
-        print(f"reference_id: {reference_id}")
-        print(f"text: {text}")
-        print(f"filename: {filename}")
-        print(f"email: {email}")
-        print(f"id: {uid}")
-
-        db_connection = connect()
-
-        if db_connection is not None:
-            insert_query(db_connection, uid, reference_id[0], email, datetime.datetime.now())
-
-        submit(uid)
-
-        e.set()
-        e.clear()
-
-        print("########################################")
-
-        if email != "":
-            pass
-            # send_massage(email, uid, "New", request.base_url)
-
-        print(f"result: =S")
+        submit_query(email, filename, reference, reference_id, text, uid)
         # return render_template('result.html', id=uid)
         return redirect(f'snp_file/{uid}')
 
@@ -507,15 +445,35 @@ def index():
     return render_template('index.html', references=references)
 
 
+def submit_query(email, filename, reference, reference_id, text, uid):
+    print(f"reference: {reference}")
+    print(f"reference_id: {reference_id}")
+    print(f"text: {text}")
+    print(f"filename: {filename}")
+    print(f"email: {email}")
+    print(f"id: {uid}")
+    db_connection = connect()
+    if db_connection is not None:
+        insert_query(db_connection, uid, reference_id[0], email, datetime.datetime.now())
+    submit(uid)
+    e.set()
+    e.clear()
+    print("########################################")
+    if email != "":
+        pass
+        # send_massage(email, uid, "New", request.base_url)
+    print(f"result: =S")
+
+
 def run_pm(uid):
-    ref = get_query_cmd_data(uid)
+    query_ref = get_query_cmd_data(uid)
 
     print("$$$$$$$$$$$$$$$$$$$$")
-    print(ref)
+    print(query_ref)
     print("$$$$$$$$$$$$$$$$$$$$")
 
     filename = f"{uid}.csv"
-    ref_data = get_reference_cmd_data(ref[0])
+    ref_data = get_reference_cmd_data(query_ref[0])
 
     print(ref_data)
 
@@ -545,22 +503,20 @@ def run_pm(uid):
 
     rest_done(uid)
 
+
 @app.route('/snp_file/<string:post_id>')
 def show_post(post_id):
     # show the post with the given id, the id is an integer
     print(post_id)
 
-    ref = get_query_cmd_data(post_id)
+    query_ref = get_query_cmd_data(post_id)
 
     print("%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%")
-    print(ref)
+    print(query_ref)
     print("%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%")
 
-
-
-    if ref is None:
+    if query_ref is None:
         abort(404)
-
 
     status = "init"
     try:
@@ -583,17 +539,16 @@ def remove_old():
     cursor.execute(select_query)
     entries = cursor.fetchall()
 
-
-    for e in entries:
-        print(e)
+    for entry in entries:
+        print(entry)
         print(one_hour_ago)
-        print(datetime.datetime.fromisoformat(e[2]))
-        if datetime.datetime.fromisoformat(e[2]) < one_hour_ago:
-            cursor.execute("DELETE FROM query WHERE id = ?", (e[0],))
-            print("DELETE FROM query WHERE id = ?", (e[0],))
+        print(datetime.datetime.fromisoformat(entry[2]))
+        if datetime.datetime.fromisoformat(entry[2]) < one_hour_ago:
+            cursor.execute("DELETE FROM query WHERE id = ?", (entry[0],))
+            print("DELETE FROM query WHERE id = ?", (entry[0],))
             try:
-                shutil.rmtree(f"{app.static_folder}/data/{e[1]}_out")
-                print(f"{app.static_folder}/data/{e[1]}_out")
+                shutil.rmtree(f"{app.static_folder}/data/{entry[1]}_out")
+                print(f"{app.static_folder}/data/{entry[1]}_out")
             except FileNotFoundError:
                 print("file not found assume it was never created")
             print(f"{cursor.rowcount} rows were deleted.")
@@ -603,11 +558,11 @@ def remove_old():
     connection.close()
 
 
-
 @app.post('/gc')
 def gc():
     remove_old()
     return jsonify({"status": "DONE"})
+
 
 def worker(cv, s):
     while True:
@@ -619,9 +574,9 @@ def worker(cv, s):
             print("^^^^^^^^^^^^^^^^^^^^^^^^^^^")
             try:
                 run_pm(work[1])
-            except Exception as e:
-                print(e)
-                db.update_query_status(work[1], "E: " + str(e))
+            except Exception as exception:
+                print(exception)
+                db.update_query_status(work[1], "E: " + str(exception))
             # db.update(work[0], "DONE")
             db.delete(work[0])
         else:
@@ -645,7 +600,6 @@ def main():
     # remove_old()
     # exit()
 
-
     print("££££££££££££££££")
     print(db.count())
     print("££££££££££££££££")
@@ -653,7 +607,7 @@ def main():
     print("#######################")
     connection = connect()
     cursor = connection.cursor()
-    cursor.execute('UPDATE cmd_queue SET status = "SUB" WHERE status = "GOT"')
+    cursor.execute('UPDATE cmd_queue SET status="SUB" WHERE status="GOT"')
     connection.commit()
     connection.close()
     print("#######################")

@@ -15,14 +15,124 @@ import uuid
 from flask import Flask, request, redirect, jsonify, render_template, abort
 from werkzeug.utils import secure_filename
 
-from .db import *
 
 import markdown
 
 from flask_mail import Mail, Message
 
 # from post_process_masks import post_process_masks
+from time import sleep
 
+import mariadb
+
+
+def open_db():
+    db = mariadb.connect(
+        host="localhost",
+        user="re",
+        password="",
+        database="polymarker_webui"
+    )
+
+    return db
+
+
+def close_db(db):
+    db.close()
+
+
+def init_db():
+    db = mariadb.connect(
+        host="localhost",
+        user="re",
+        password="",
+    )
+
+    cursor = db.cursor()
+    # cursor.execute("DROP DATABASE IF EXISTS polymarker_webui")
+    # cursor.execute("CREATE DATABASE polymarker_webui")
+    cursor.execute("USE polymarker_webui")
+    cursor.execute(
+        "CREATE TABLE cmd_queue(id INTEGER PRIMARY KEY AUTO_INCREMENT NOT NULL, cmd TEXT NOT NULL, status TEXT NOT NULL)")
+    db.commit()
+
+    cursor.close()
+    db.close()
+
+
+def submit(cmd):
+    print("SUB")
+    db = open_db()
+    cursor = db.cursor()
+    cursor.execute("INSERT INTO cmd_queue(cmd, status) VALUES (?, ?)", (cmd, "SUB"))
+    db.commit()
+    cursor.close()
+    db.close()
+
+
+def get(s):
+    s.acquire(blocking=True)
+    db = open_db()
+    cursor = db.cursor()
+    cursor.execute("SELECT * FROM cmd_queue WHERE status=?", ("SUB",))
+    result = cursor.fetchone()
+    if result is not None:
+        cursor.execute("UPDATE cmd_queue SET status=? WHERE id=?", ("GOT", result[0]))
+        db.commit()
+    cursor.close()
+    db.close()
+    s.release()
+    return result
+
+
+def update(cmd, status):
+    db = open_db()
+    cursor = db.cursor()
+    cursor.execute("UPDATE cmd_queue SET status=? WHERE id=?", (status, cmd))
+    db.commit()
+    cursor.close()
+    db.close()
+
+
+def count():
+    db = open_db()
+    cursor = db.cursor()
+    cursor.execute("SELECT COUNT(*) FROM cmd_queue")
+    qcount = cursor.fetchone()[0]
+    cursor.close()
+    db.close()
+    return qcount
+
+
+def delete(cmd):
+    db = open_db()
+    cursor = db.cursor()
+    cursor.execute("DELETE FROM cmd_queue WHERE id=?", (cmd,))
+    db.commit()
+    cursor.close()
+    db.close()
+
+
+def update_query_status(uid, status):
+    db = open_db()
+    cursor = db.cursor()
+    cursor.execute("UPDATE query SET status=? WHERE uid=?", (status, uid))
+    db.commit()
+    cursor.close()
+    db.close()
+
+
+# def worker(cv, s):
+#     while True:
+#         work = get(s)
+#         if work is not None:
+#             sleep(3)
+#             print(work)
+#             update(work[0], "DONE")
+#         else:
+#             print("...")
+#             cv.wait()
+#
 
 # UPLOAD_FOLDER = '/usr/users/JIC_a5/goz24vof/uploads'
 UPLOAD_FOLDER = '/tmp'
@@ -223,7 +333,7 @@ def add(path):
                         insert_reference(db_connection, refs)
                         create_query_table(db_connection)
             except KeyError:
-                print(f"missing path value from reference yaml")
+                print("missing path value from reference yaml")
                 exit(-1)
         except yaml.parser.ParserError:
             print(f"file {path} does not appear to be a valid yaml")
@@ -487,7 +597,7 @@ def run_pm(uid):
 
     print(result)
 
-    db.update_query_status(uid, str(result))
+    update_query_status(uid, str(result))
 
     print("_____________")
     print(app.static_folder)
@@ -526,7 +636,7 @@ def show_post(post_id):
     except FileNotFoundError:
         print("status file not ready")
 
-    return render_template('res.html', id=post_id, status=status, qcount=db.count())
+    return render_template('res.html', id=post_id, status=status, qcount=count())
 
 
 def remove_old():
@@ -564,9 +674,20 @@ def gc():
     return jsonify({"status": "DONE"})
 
 
+def gc_post():
+    url = 'http://127.0.0.1:5000/gc'
+    pm_test_data = {
+
+    }
+    r = requests.post(url, json=pm_test_data)
+    r.raise_for_status()
+    print(r.json())
+
+
+
 def worker(cv, s):
     while True:
-        work = db.get(s)
+        work = get(s)
         if work is not None:
             sleep(3)
             print("^^^^^^^^^^^^^^^^^^^^^^^^^^^")
@@ -576,9 +697,9 @@ def worker(cv, s):
                 run_pm(work[1])
             except Exception as exception:
                 print(exception)
-                db.update_query_status(work[1], "E: " + str(exception))
+                update_query_status(work[1], "E: " + str(exception))
             # db.update(work[0], "DONE")
-            db.delete(work[0])
+            delete(work[0])
         else:
             print("...")
             cv.wait()
@@ -596,12 +717,15 @@ def main():
         elif sys.argv[1] == "init":
             init_db()
             exit(0)
+        elif sys.argv[1] == "gc":
+            gc_post()
+            exit(0)
 
     # remove_old()
     # exit()
 
     print("££££££££££££££££")
-    print(db.count())
+    print(count())
     print("££££££££££££££££")
 
     print("#######################")

@@ -15,7 +15,6 @@ import uuid
 from flask import Flask, request, redirect, jsonify, render_template, abort
 from werkzeug.utils import secure_filename
 
-
 import markdown
 
 from flask_mail import Mail, Message
@@ -173,6 +172,15 @@ def get_references():
         proc_ref.append(r + (markdown.markdown(r[2]),))
 
     return proc_ref
+
+
+def remove_email(uid):
+    connection = connect()
+    cursor = connection.cursor()
+
+    cursor.execute('UPDATE query SET email="" WHERE uid=?', (uid,))
+    connection.commit()
+    connection.close()
 
 
 # # Define a route for the home page
@@ -392,8 +400,9 @@ def done():
             lines = f.read().splitlines()
             status = lines[-1]
             print(status)
-            # send_massage(ref[1], uid, status,"http://127.0.0.1:5000/")
+            send_massage(query_ref[1], uid, status, "http://127.0.0.1:5000/")
 
+        remove_email(uid)
     return jsonify({"status": "DONE"})
 
 
@@ -570,8 +579,7 @@ def submit_query(email, filename, reference, reference_id, text, uid):
     e.clear()
     print("########################################")
     if email != "":
-        pass
-        # send_massage(email, uid, "New", request.base_url)
+        send_massage(email, uid, "New", request.base_url)
     print(f"result: =S")
 
 
@@ -682,7 +690,6 @@ def gc_post():
     r = requests.post(url, json=pm_test_data)
     r.raise_for_status()
     print(r.json())
-
 
 
 def worker(cv, s):

@@ -1,5 +1,5 @@
 - name: Brassica napus cv Darmor-bzh v4.1
-  path: /mnt/hdd/rellis/pm_reference_genomes/Brassica_napus_v4.1.chromosomes/Brassica_napus_v4.1.chromosomes.fa
+  path: /home/polymarker/genomes/Brassica_napus_v4.1.chromosomes/Brassica_napus_v4.1.chromosomes.fa
   genome_count: 1
   arm_selection: _,0
   description: >

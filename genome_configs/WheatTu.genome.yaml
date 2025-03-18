@@ -1,5 +1,5 @@
 - name: Triticum urartu (Tu2.0)
-  path: /mnt/hdd/rellis/pm_reference_genomes/WheatTu.genome/WheatTu.genome.fasta
+  path: /home/polymarker/genomes/WheatTu.genome/WheatTu.genome.fasta
   genome_count: 1
   arm_selection: scaffold
   description: >

@@ -2,7 +2,6 @@
 requires = ["flit_core<4"]
 build-backend = "flit_core.buildapi"
 
-
 [project]
 name = "pmwui"
 version = "0.0.3"
@@ -13,28 +12,29 @@ license = { file = "LICENSE" }
 # keywords = ["sample", "setuptools", "development"]
 authors = [{ name = "Rob Ellis", email = "rob.ellis@jic.ac.uk" }]
 maintainers = [
-  { name = "Rob Ellis", email = "rob.ellis@jic.ac.uk" },
+    { name = "Rob Ellis", email = "rob.ellis@jic.ac.uk" },
 ]
 classifiers = [
-  "Development Status :: 3 - Alpha",
-  "License :: OSI Approved :: MIT License",
-  "Programming Language :: Python :: 3.9",
+    "Development Status :: 3 - Alpha",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3.9",
 ]
 
 dependencies = [
-  'flask',
-  'flask_mail',
-  'mariadb',
-  'markdown',
-  'pyyaml',
-  'requests',
-  'werkzeug'
+    'gunicorn',
+    'flask',
+    'flask_mail',
+    'mariadb',
+    'markdown',
+    'pyyaml',
+    'requests',
+    'werkzeug'
 ]
-# [project.urls]
-# "Homepage" = "https://github.com/pypa/sampleproject"
-# "Bug Reports" = "https://github.com/pypa/sampleproject/issues"
-# "Funding" = "https://donate.pypi.org"
-# "Say Thanks!" = "http://saythanks.io/to/example"
-# "Source" = "https://github.com/pypa/sampleproject/"
+
+[project.urls]
+"Homepage" = "https://polymarker.jic.ac.uk"
+"Bug Reports" = "https://github.com/cb2e6f/polymarker-webui/issues"
+"Source" = "https://github.com/cb2e6f/polymarker-webui/"
+
 [project.scripts]
 pmwui = "pmwui:main"

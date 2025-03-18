@@ -1,5 +1,5 @@
 - name: Triticum turgidum, Kronos, v1.1
-  path: /mnt/hdd/rellis/pm_reference_genomes/Kronos.collapsed.chromosomes.masked.v1.1/Kronos.collapsed.chromosomes.masked.v1.1.fa
+  path: /home/polymarker/genomes/Kronos.collapsed.chromosomes.masked.v1.1/Kronos.collapsed.chromosomes.masked.v1.1.fa
   genome_count: 2
   arm_selection: scaffold
   description: >

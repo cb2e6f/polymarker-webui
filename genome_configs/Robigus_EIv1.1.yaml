@@ -1,5 +1,5 @@
 - name: Triticum aestivum (cv. Robigus)
-  path: /mnt/hdd/rellis/pm_reference_genomes/Robigus_EIv1.1/Robigus_EIv1.1.fa
+  path: /home/polymarker/genomes/Robigus_EIv1.1/Robigus_EIv1.1.fa
   genome_count: 3
   arm_selection: scaffold
   description: >

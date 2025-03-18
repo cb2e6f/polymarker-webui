@@ -1,5 +1,5 @@
 - name: Triticum aestivum (cv. Cadenza)
-  path: /mnt/hdd/rellis/pm_reference_genomes/Cadenza_EIv1.1/Cadenza_EIv1.1.fa
+  path: /home/polymarker/genomes/Cadenza_EIv1.1/Cadenza_EIv1.1.fa
   genome_count: 3
   arm_selection: scaffold
   description: >

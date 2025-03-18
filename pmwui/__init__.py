@@ -20,7 +20,7 @@ import markdown
 from flask_mail import Mail, Message
 
 # from post_process_masks import post_process_masks
-from time import sleep
+# from time import sleep
 
 import mariadb
 
@@ -277,7 +277,7 @@ def create_query_table(connection):
         date TEXT,
         status TEXT        
     );
-    """
+"""
 
     try:
         cursor.execute(query)
@@ -580,7 +580,7 @@ def submit_query(email, filename, reference, reference_id, text, uid):
     print("########################################")
     if email != "":
         send_massage(email, uid, "New", request.base_url)
-    print(f"result: =S")
+    print("result: =S")
 
 
 def run_pm(uid):

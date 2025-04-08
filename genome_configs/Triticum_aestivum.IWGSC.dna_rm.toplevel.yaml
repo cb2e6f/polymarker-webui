@@ -1,5 +1,5 @@
 - name: Wheat cv Chinese Spring RefSeq v1.0
-  path: /home/polymarker/genomes/Triticum_aestivum.IWGSC.dna_rm.toplevel/Triticum_aestivum.IWGSC.dna_rm.toplevel.fa
+  path: /home/polymarker/data/genomes/Triticum_aestivum.IWGSC.dna_rm.toplevel/Triticum_aestivum.IWGSC.dna_rm.toplevel.fa
   genome_count: 3
   arm_selection: first_two
   description: >

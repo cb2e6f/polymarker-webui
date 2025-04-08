@@ -1,5 +1,5 @@
 - name: Triticum aestivum (Paragon, v3)
-  path: .../19082024_paragon_v3.fa
+  path: /home/polymarker/data/genomes/19082024_paragon_v3/19082024_paragon_v3.fa
   genome_count: 3
   arm_selection: scaffold
   description: >

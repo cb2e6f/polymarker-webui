@@ -1,0 +1,12 @@
+[Unit]
+Description=Polymarker web UI
+After=network.target
+
+[Service]
+User=polymarker
+WorkingDirectory=/home/polymarker
+Environment="PATH=/home/polymarker/venv/bin:/home/polymarker/.local/bin:/home/polymarker/bin:/usr/local/bin:/usr/bin:/usr/local/sbin:/usr/sbin"
+ExecStart=/home/polymarker/venv/bin/gunicorn --log-level debug -w 2 --timeout 600 -b 127.0.0.1:5000 pmwui:app
+
+[Install]
+WantedBy=multi-user.target

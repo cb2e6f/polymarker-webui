@@ -19,6 +19,8 @@ import markdown
 
 from flask_mail import Mail, Message
 
+import logging
+
 # from post_process_masks import post_process_masks
 # from time import sleep
 
@@ -28,7 +30,7 @@ import mariadb
 def open_db():
     db = mariadb.connect(
         host="localhost",
-        user="re",
+        user="polymarker",
         password="",
         database="polymarker_webui"
     )
@@ -43,7 +45,7 @@ def close_db(db):
 def init_db():
     db = mariadb.connect(
         host="localhost",
-        user="re",
+        user="polymarker",
         password="",
     )
 
@@ -60,7 +62,7 @@ def init_db():
 
 
 def submit(cmd):
-    print("SUB")
+    app.logger.info("SUB")
     db = open_db()
     cursor = db.cursor()
     cursor.execute("INSERT INTO cmd_queue(cmd, status) VALUES (?, ?)", (cmd, "SUB"))
@@ -204,33 +206,33 @@ The latest status and results (when done) are available in: {url}snp_file/{uid}"
 
 
 def index_ref(path):
-    print(f"path ===== {path}")
-    print("indexing")
+    app.logger.info(f"path ===== {path}")
+    app.logger.info("indexing")
     command = f"samtools faidx {path}"
     result = subprocess.run(command, shell=True)
     if result.returncode > 0:
-        print(result)
+        app.logger.info(result)
         if result.returncode == 127:
-            print("samtools not found")
+            app.logger.info("samtools not found")
         elif result.returncode == 1:
-            print(f"failed to open file {path}")
+            app.logger.info(f"failed to open file {path}")
         exit(result.returncode)
 
-    print("-------------")
+    app.logger.info("-------------")
 
     command = f"makeblastdb -dbtype 'nucl' -in {path} -out {path}"
     result = subprocess.run(command, shell=True)
     if result.returncode > 0:
-        print("raise hell")
-        print(result)
+        app.logger.info("raise hell")
+        app.logger.info(result)
         exit(-1)
-    print("-------------")
+    app.logger.info("-------------")
 
 
 def connect():
     try:
         connection = mariadb.connect(
-            user="re",
+            user="polymarker",
             password="",
             host="localhost",
             port=3306,
@@ -238,7 +240,7 @@ def connect():
         )
         return connection
     except mariadb.Error as exception:
-        print(f"error connecting to mariadb: {exception}")
+        app.logger.info(f"error connecting to mariadb: {exception}")
         return None
 
 
@@ -260,9 +262,9 @@ def create_reference_table(connection):
     try:
         cursor.execute(query)
         connection.commit()
-        print(f"created reference table: {query}")
+        app.logger.info(f"created reference table: {query}")
     except mariadb.Error as exception:
-        print(f"error creating reference table: {exception}")
+        app.logger.info(f"error creating reference table: {exception}")
 
 
 def create_query_table(connection):
@@ -282,9 +284,9 @@ def create_query_table(connection):
     try:
         cursor.execute(query)
         connection.commit()
-        print(f"created query table: {query}")
+        app.logger.info(f"created query table: {query}")
     except mariadb.Error as exception:
-        print(f"error creating query table: {exception}")
+        app.logger.info(f"error creating query table: {exception}")
 
 
 def insert_reference(connection, config):
@@ -295,18 +297,18 @@ def insert_reference(connection, config):
     VALUES (?, ?, ?, ?, ?, ?)
     """
 
-    print("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
-    print(config["example"])
-    print("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
+    app.logger.info("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
+    app.logger.info(config["example"])
+    app.logger.info("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
 
     try:
         cursor.execute(query, (
             config["name"], config["path"], config["genome_count"], config["arm_selection"], config["description"],
             config["example"]))
         connection.commit()
-        print(f"inserted reference: {query}")
+        app.logger.info(f"inserted reference: {query}")
     except mariadb.Error as exception:
-        print(f"error inserting reference: {exception}")
+        app.logger.info(f"error inserting reference: {exception}")
 
 
 def insert_query(connection, uid, reference, email, date):
@@ -320,9 +322,9 @@ def insert_query(connection, uid, reference, email, date):
     try:
         cursor.execute(query, (uid, reference, email, date))
         connection.commit()
-        print(f"inserted query: {query}")
+        app.logger.info(f"inserted query: {query}")
     except mariadb.Error as exception:
-        print(f"error inserting query: {exception}")
+        app.logger.info(f"error inserting query: {exception}")
 
 
 def add(path):
@@ -330,7 +332,7 @@ def add(path):
         reference_data_file = open(path)
         try:
             reference_data = yaml.safe_load(reference_data_file)
-            print("-------")
+            app.logger.info("-------")
             try:
                 for refs in reference_data:
                     index_ref(refs["path"])
@@ -341,15 +343,15 @@ def add(path):
                         insert_reference(db_connection, refs)
                         create_query_table(db_connection)
             except KeyError:
-                print("missing path value from reference yaml")
+                app.logger.info("missing path value from reference yaml")
                 exit(-1)
         except yaml.parser.ParserError:
-            print(f"file {path} does not appear to be a valid yaml")
+            app.logger.info(f"file {path} does not appear to be a valid yaml")
             reference_data_file.close()
             exit(-1)
         reference_data_file.close()
     except FileNotFoundError:
-        print(f"file {path} not found")
+        app.logger.info(f"file {path} not found")
         exit(-1)
 
 
@@ -389,17 +391,17 @@ def snp_files_json():
 def done():
     data = request.get_json()
 
-    print(data)
+    app.logger.info(data)
 
     uid = data["UID"]
     query_ref = get_query_cmd_data(uid)
-    print(query_ref)
+    app.logger.info(query_ref)
 
     if query_ref[1] != "":
         with open(f"{app.static_folder}/data/{uid}_out/status.txt", 'r') as f:
             lines = f.read().splitlines()
             status = lines[-1]
-            print(status)
+            app.logger.info(status)
             send_massage(query_ref[1], uid, status, "http://127.0.0.1:5000/")
 
         remove_email(uid)
@@ -415,7 +417,7 @@ def rest_done(uid):
 
     r = requests.post(url, json=data)
     r.raise_for_status()
-    print(r.json())
+    app.logger.info(r.json())
 
 
 def get_reference_from_name(name):
@@ -452,7 +454,7 @@ def ref():
     if request.method == 'POST':
         # selected_name = request.form['reference']
 
-        print(request.form)
+        app.logger.info(request.form)
 
         # print(selected_name)
 
@@ -529,6 +531,14 @@ def post_process_masks(src, des):
 
 @app.route('/', methods=['GET', 'POST'])
 def index():
+    app.logger.debug('this is a DEBUG message')
+    app.logger.info('this is an INFO message')
+    app.logger.warning('this is a WARNING message')
+    app.logger.error('this is an ERROR message')
+    app.logger.critical('this is a CRITICAL message')
+
+    app.logger.info("kjdkjf")
+
     if request.method == 'POST':
         # print(request.form)
         reference = request.form['reference']
@@ -565,53 +575,53 @@ def index():
 
 
 def submit_query(email, filename, reference, reference_id, text, uid):
-    print(f"reference: {reference}")
-    print(f"reference_id: {reference_id}")
-    print(f"text: {text}")
-    print(f"filename: {filename}")
-    print(f"email: {email}")
-    print(f"id: {uid}")
+    app.logger.info(f"reference: {reference}")
+    app.logger.info(f"reference_id: {reference_id}")
+    app.logger.info(f"text: {text}")
+    app.logger.info(f"filename: {filename}")
+    app.logger.info(f"email: {email}")
+    app.logger.info(f"id: {uid}")
     db_connection = connect()
     if db_connection is not None:
         insert_query(db_connection, uid, reference_id[0], email, datetime.datetime.now())
     submit(uid)
     e.set()
     e.clear()
-    print("########################################")
+    app.logger.info("########################################")
     if email != "":
         send_massage(email, uid, "New", request.base_url)
-    print("result: =S")
+    app.logger.info("result: =S")
 
 
 def run_pm(uid):
     query_ref = get_query_cmd_data(uid)
 
-    print("$$$$$$$$$$$$$$$$$$$$")
-    print(query_ref)
-    print("$$$$$$$$$$$$$$$$$$$$")
+    app.logger.info("$$$$$$$$$$$$$$$$$$$$")
+    app.logger.info(query_ref)
+    app.logger.info("$$$$$$$$$$$$$$$$$$$$")
 
     filename = f"{uid}.csv"
     ref_data = get_reference_cmd_data(query_ref[0])
 
-    print(ref_data)
+    app.logger.info(ref_data)
 
     ref_path = ref_data[0]
     ref_genome_count = ref_data[1]
     ref_arm_selection = ref_data[2]
 
     command = f"polymarker.rb -m {os.path.join(app.config['UPLOAD_FOLDER'], filename)} -o {app.static_folder}/data/{uid}_out -c {ref_path} -g {ref_genome_count} -a {ref_arm_selection} -A blast"
-    print(command)
+    app.logger.info(command)
     result = subprocess.run(command, shell=True)
 
-    print(result)
+    app.logger.info(result)
 
     update_query_status(uid, str(result))
 
-    print("_____________")
-    print(app.static_folder)
-    print("_____________")
+    app.logger.info("_____________")
+    app.logger.info(app.static_folder)
+    app.logger.info("_____________")
 
-    print(os.listdir(app.static_folder))
+    app.logger.info(os.listdir(app.static_folder))
 
     os.rename(f"{app.static_folder}/data/{uid}_out/exons_genes_and_contigs.fa",
               f"{app.static_folder}/data/{uid}_out/exons_genes_and_contigs.fa.og")
@@ -625,13 +635,13 @@ def run_pm(uid):
 @app.route('/snp_file/<string:post_id>')
 def show_post(post_id):
     # show the post with the given id, the id is an integer
-    print(post_id)
+    app.logger.info(post_id)
 
     query_ref = get_query_cmd_data(post_id)
 
-    print("%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%")
-    print(query_ref)
-    print("%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%")
+    app.logger.info("%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%")
+    app.logger.info(query_ref)
+    app.logger.info("%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%")
 
     if query_ref is None:
         abort(404)
@@ -642,7 +652,7 @@ def show_post(post_id):
             lines = f.read().splitlines()
             status = lines[-1]
     except FileNotFoundError:
-        print("status file not ready")
+        app.logger.info("status file not ready")
 
     return render_template('res.html', id=post_id, status=status, qcount=count())
 
@@ -658,18 +668,18 @@ def remove_old():
     entries = cursor.fetchall()
 
     for entry in entries:
-        print(entry)
-        print(one_hour_ago)
-        print(datetime.datetime.fromisoformat(entry[2]))
+        app.logger.info(entry)
+        app.logger.info(one_hour_ago)
+        app.logger.info(datetime.datetime.fromisoformat(entry[2]))
         if datetime.datetime.fromisoformat(entry[2]) < one_hour_ago:
             cursor.execute("DELETE FROM query WHERE id = ?", (entry[0],))
-            print("DELETE FROM query WHERE id = ?", (entry[0],))
+            app.logger.info("DELETE FROM query WHERE id = ?", (entry[0],))
             try:
                 shutil.rmtree(f"{app.static_folder}/data/{entry[1]}_out")
-                print(f"{app.static_folder}/data/{entry[1]}_out")
+                app.logger.info(f"{app.static_folder}/data/{entry[1]}_out")
             except FileNotFoundError:
-                print("file not found assume it was never created")
-            print(f"{cursor.rowcount} rows were deleted.")
+                app.logger.info("file not found assume it was never created")
+            app.logger.info(f"{cursor.rowcount} rows were deleted.")
             connection.commit()
 
     cursor.close()
@@ -689,7 +699,7 @@ def gc_post():
     }
     r = requests.post(url, json=pm_test_data)
     r.raise_for_status()
-    print(r.json())
+    app.logger.info(r.json())
 
 
 def worker(cv, s):
@@ -697,29 +707,40 @@ def worker(cv, s):
         work = get(s)
         if work is not None:
             sleep(3)
-            print("^^^^^^^^^^^^^^^^^^^^^^^^^^^")
-            print(work)
-            print("^^^^^^^^^^^^^^^^^^^^^^^^^^^")
+            app.logger.info("^^^^^^^^^^^^^^^^^^^^^^^^^^^")
+            app.logger.info(work)
+            app.logger.info("^^^^^^^^^^^^^^^^^^^^^^^^^^^")
             try:
                 run_pm(work[1])
             except Exception as exception:
-                print(exception)
+                app.logger.info(exception)
                 update_query_status(work[1], "E: " + str(exception))
             # db.update(work[0], "DONE")
             delete(work[0])
         else:
-            print("...")
+            app.logger.info("...")
             cv.wait()
 
 
 def main():
+
+
+    app.logger.debug('this is a DEBUG message')
+    app.logger.info('this is an INFO message')
+    app.logger.warning('this is a WARNING message')
+    app.logger.error('this is an ERROR message')
+    app.logger.critical('this is a CRITICAL message')
+
+
+
+
     if len(sys.argv) > 1:
         if sys.argv[1] == "add":
             if len(sys.argv) >= 3:
                 for conf in sys.argv[2:]:
                     add(conf)
             else:
-                print("invalid options")
+                app.logger.info("invalid options")
             exit(0)
         elif sys.argv[1] == "init":
             init_db()
@@ -731,17 +752,17 @@ def main():
     # remove_old()
     # exit()
 
-    print("££££££££££££££££")
-    print(count())
-    print("££££££££££££££££")
+    app.logger.info("££££££££££££££££")
+    app.logger.info(count())
+    app.logger.info("££££££££££££££££")
 
-    print("#######################")
+    app.logger.info("#######################")
     connection = connect()
     cursor = connection.cursor()
     cursor.execute('UPDATE cmd_queue SET status="SUB" WHERE status="GOT"')
     connection.commit()
     connection.close()
-    print("#######################")
+    app.logger.info("#######################")
 
     # e = threading.Event()
     s = threading.Semaphore()
@@ -761,5 +782,50 @@ def main():
     worker2.join()
 
 
+print(__name__)
+
 if __name__ == "__main__":
     main()
+
+
+print("what is going on?")
+
+def serv():
+    gunicorn_logger = logging.getLogger('gunicorn.error')
+    app.logger.handlers = gunicorn_logger.handlers
+    app.logger.setLevel(gunicorn_logger.level)
+
+    app.logger.info(__name__)
+
+
+    app.logger.info(os.environ)
+
+    app.logger.info("££££££££££££££££")
+    app.logger.info(count())
+    app.logger.info("££££££££££££££££")
+
+    app.logger.info("#######################")
+    connection = connect()
+    cursor = connection.cursor()
+    cursor.execute('UPDATE cmd_queue SET status="SUB" WHERE status="GOT"')
+    connection.commit()
+    connection.close()
+    app.logger.info("#######################")
+
+    # e = threading.Event()
+    s = threading.Semaphore()
+
+    worker1 = threading.Thread(target=worker, args=(e, s))
+    worker1.start()
+
+    worker2 = threading.Thread(target=worker, args=(e, s))
+    worker2.start()
+
+    e.set()
+    e.clear()
+    return app
+
+
+
+print("how is this happening?")
+

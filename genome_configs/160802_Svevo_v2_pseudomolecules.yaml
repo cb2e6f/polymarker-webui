@@ -1,5 +1,5 @@
 - name: Durum wheat genome (cv. Svevo)
-  path: /home/polymarker/genomes/160802_Svevo_v2_pseudomolecules/160802_Svevo_v2_pseudomolecules.fasta
+  path: /home/polymarker/data/genomes/160802_Svevo_v2_pseudomolecules/160802_Svevo_v2_pseudomolecules.fasta
   genome_count: 2
   arm_selection: nrgene
   description: >

@@ -1,5 +1,5 @@
 - name: Glycine max var. Williams 82
-  path: /home/polymarker/genomes/Glycine_max.Glycine_max_v2.1.dna_rm.toplevel/Glycine_max.Glycine_max_v2.1.dna_rm.toplevel.fa
+  path: /home/polymarker/data/genomes/Glycine_max.Glycine_max_v2.1.dna_rm.toplevel/Glycine_max.Glycine_max_v2.1.dna_rm.toplevel.fa
   genome_count: 1
   arm_selection: scaffold
   description: >

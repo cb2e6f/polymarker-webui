@@ -1,5 +1,5 @@
 - name: Brassica oleracea kale-like type TO1000DH
-  path: /home/polymarker/genomes/Brassica_oleracea.BOL.dna_sm.toplevel/Brassica_oleracea.BOL.dna_sm.toplevel.fa
+  path: /home/polymarker/data/genomes/Brassica_oleracea.BOL.dna_sm.toplevel/Brassica_oleracea.BOL.dna_sm.toplevel.fa
   genome_count: 1
   arm_selection: scaffold
   description: >

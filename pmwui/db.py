@@ -2,7 +2,7 @@ import logging
 
 import mariadb
 
-logger = logging.getLogger('gunicorn.error')
+log = logging.getLogger('gunicorn.error')
 
 
 def open_db():
@@ -13,13 +13,13 @@ def open_db():
         database="polymarker_webui"
     )
 
-    logger.info("on open")
+    log.info("on open")
 
     return dbc
 
 
 def connect():
-    logger.info("on connect")
+    log.info("on connect")
     try:
         connection = mariadb.connect(
             user="polymarker",

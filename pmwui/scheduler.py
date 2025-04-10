@@ -1,10 +1,9 @@
 import logging
 import threading
-from asyncio import sleep
 
 from pmwui import db
 
-logger = logging.getLogger('gunicorn.error')
+log = logging.getLogger('gunicorn.error')
 
 
 class Scheduler:
@@ -20,22 +19,20 @@ class Scheduler:
         self.workers.append(threading.Thread(target=self.worker))
 
     def worker(self):
+        log.info("start")
         while self.running:
-            logger.info("worker running")
+            log.info("working")
             job = self.get()
             if job is not None:
-                sleep(3)
-                logger.info("^^^^^^^^^^^^^^^^^^^^^^^^^^")
-                logger.info(job)
-                logger.info("^^^^^^^^^^^^^^^^^^^^^^^^^^")
+                log.info(f"executing job: {job}")
                 try:
                     self.work(job[1])
                 except Exception as exception:
-                    logger.info(exception)
+                    log.info(exception)
                     # update_query_status(work[1], "E: " + str(exception))
                 self.delete(job[0])
             else:
-                logger.info("...")
+                log.info("queue empty waiting for work...")
                 self.event.wait()
 
     def poke(self):
@@ -43,6 +40,7 @@ class Scheduler:
         self.event.clear()
 
     def start(self):
+        log.info("scheduler start")
         self.running = True
         self.workers[0].start()
         self.poke()
@@ -68,7 +66,7 @@ class Scheduler:
 
     @staticmethod
     def submit(cmd):
-        logger.info("SUB")
+        log.info("submitting job: %s", cmd)
         dbc = db.open_db()
         cursor = dbc.cursor()
         cursor.execute("INSERT INTO cmd_queue(cmd, status) VALUES (?, ?)", (cmd, "SUB"))

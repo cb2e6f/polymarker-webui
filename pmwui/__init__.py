@@ -24,6 +24,9 @@ import pmwui.db
 
 from pmwui.scheduler import Scheduler
 
+log = logging.getLogger('gunicorn.error')
+logging.basicConfig(level=logging.DEBUG)
+
 UPLOAD_FOLDER = '/tmp'
 ALLOWED_EXTENSIONS = {'txt', 'csv', 'png', 'jpg', 'jpeg', 'gif'}
 
@@ -38,6 +41,9 @@ app.config['MAIL_PASSWORD'] = 'Parrot14'
 app.config['MAIL_USE_TLS'] = True
 app.config['MAIL_USE_SSL'] = False
 # app.config['MAIL_DEBUG'] = True
+
+app.logger.handlers = log.handlers
+app.logger.setLevel(log.level)
 
 mail = Mail(app)
 
@@ -183,6 +189,218 @@ def add(path):
         exit(-1)
 
 
+def rest_done(uid):
+    url = 'http://127.0.0.1:5000/done'
+
+    data = {
+        "UID": uid
+    }
+
+    r = requests.post(url, json=data)
+    r.raise_for_status()
+    app.logger.info(r.json())
+
+
+def get_reference_from_name(name):
+    connection = db.connect()
+    cursor = connection.cursor()
+    cursor.execute("SELECT id FROM reference WHERE name = %s", (name,))
+    reference = cursor.fetchone()
+    connection.close()
+    return reference
+
+
+def get_reference_cmd_data(ref_id):
+    connection = db.connect()
+    cursor = connection.cursor()
+    cursor.execute("SELECT path, genome_count, arm_selection FROM reference WHERE id = %s", (ref_id,))
+    reference = cursor.fetchone()
+    connection.close()
+    return reference
+
+
+def get_query_cmd_data(uid):
+    connection = db.connect()
+    cursor = connection.cursor()
+    cursor.execute("SELECT reference, email FROM query WHERE uid = %s", (uid,))
+    reference = cursor.fetchone()
+    connection.close()
+    return reference
+
+
+def post_process_masks(src, des):
+    src_file = open(src, 'r')
+    des_file = open(des, 'w')
+
+    mask = False
+    skip = False
+
+    for line in src_file:
+        if skip and line.startswith(">"):
+            skip = False
+
+        if mask and line.startswith(">"):
+            skip = True
+            mask = False
+            continue
+
+        if line.startswith(">MASK"):
+            mask = True
+
+        if skip:
+            continue
+
+        des_file.write(line)
+
+    des_file.close()
+    src_file.close()
+
+
+def submit_query(email, filename, reference, reference_id, text, uid):
+    app.logger.info(f"reference: {reference}")
+    app.logger.info(f"reference_id: {reference_id}")
+    app.logger.info(f"text: {text}")
+    app.logger.info(f"filename: {filename}")
+    app.logger.info(f"email: {email}")
+    app.logger.info(f"id: {uid}")
+    db_connection = db.connect()
+    if db_connection is not None:
+        db.insert_query(db_connection, uid, reference_id[0], email, datetime.datetime.now())
+    scheduler.submit(uid)
+    scheduler.poke()
+    app.logger.info("########################################")
+    if email != "":
+        send_massage(email, uid, "New", request.base_url)
+    app.logger.info("result: =S")
+
+
+def remove_old():
+    connection = db.connect()
+    cursor = connection.cursor()
+
+    one_hour_ago = datetime.datetime.now() - datetime.timedelta(minutes=1)
+
+    select_query = "SELECT id, uid, date FROM query"
+    cursor.execute(select_query)
+    entries = cursor.fetchall()
+
+    for entry in entries:
+        app.logger.info(entry)
+        app.logger.info(one_hour_ago)
+        app.logger.info(datetime.datetime.fromisoformat(entry[2]))
+        if datetime.datetime.fromisoformat(entry[2]) < one_hour_ago:
+            cursor.execute("DELETE FROM query WHERE id = ?", (entry[0],))
+            app.logger.info("DELETE FROM query WHERE id = ?", (entry[0],))
+            try:
+                shutil.rmtree(f"{app.static_folder}/data/{entry[1]}_out")
+                app.logger.info(f"{app.static_folder}/data/{entry[1]}_out")
+            except FileNotFoundError:
+                app.logger.info("file not found assume it was never created")
+            app.logger.info(f"{cursor.rowcount} rows were deleted.")
+            connection.commit()
+
+    cursor.close()
+    connection.close()
+
+
+def gc_post():
+    url = 'http://127.0.0.1:5000/gc'
+    pm_test_data = {
+
+    }
+    r = requests.post(url, json=pm_test_data)
+    r.raise_for_status()
+    app.logger.info(r.json())
+
+
+@app.route('/', methods=['GET', 'POST'])
+def index():
+    if request.method == 'POST':
+        reference = request.form['reference']
+
+        if "text" in request.form:
+            text = request.form['text']
+        else:
+            text = ''
+
+        filename = ''
+        if 'file' in request.files:
+            file = request.files['query_file']
+
+            if file and file.filename != '':
+                filename = secure_filename(file.filename)
+                file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+
+        email = request.form['email']
+        uid = uuid.uuid4()
+        reference_id = get_reference_from_name(reference)
+
+        # if filename == '' and text == '':
+        #     references = get_references()
+        #     return render_template('index.html', references=references)
+
+        if filename == '' and text != '':
+            filename = f"{uid}.csv"
+            file = open(os.path.join(app.config['UPLOAD_FOLDER'], filename), 'w')
+            file.write(text)
+            file.close()
+
+        submit_query(email, filename, reference, reference_id, text, uid)
+        return redirect(f'snp_file/{uid}')
+
+    references = get_references()
+    return render_template('index.html', references=references)
+
+
+@app.route('/about', methods=['GET'])
+def about():
+    references = get_references()
+    return render_template('about.html', references=references)
+
+
+@app.route('/cite', methods=['GET'])
+def cite():
+    return render_template('cite.html')
+
+
+@app.route('/designed_primers', methods=['GET'])
+def designed():
+    return render_template('designed.html')
+
+
+@app.route("/ver")
+def hello_world():
+    import importlib.metadata
+
+    version_string_of_foo = importlib.metadata.version('pmwui')
+    return f"<p>Hello, World! {version_string_of_foo}</p>"
+
+
+@app.route('/snp_file/<string:post_id>')
+def show_post(post_id):
+    # show the post with the given id, the id is an integer
+    app.logger.info(post_id)
+
+    query_ref = get_query_cmd_data(post_id)
+
+    app.logger.info("%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%")
+    app.logger.info(query_ref)
+    app.logger.info("%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%")
+
+    if query_ref is None:
+        abort(404)
+
+    status = "init"
+    try:
+        with open(f"{app.static_folder}/data/{post_id}_out/status.txt", 'r') as f:
+            lines = f.read().splitlines()
+            status = lines[-1]
+    except FileNotFoundError:
+        app.logger.info("status file not ready")
+
+    return render_template('res.html', id=post_id, status=status, qcount=scheduler.count())
+
+
 @app.post('/snp_files.json')
 def snp_files_json():
     data = request.get_json()
@@ -227,237 +445,19 @@ def done():
     return jsonify({"status": "DONE"})
 
 
-def rest_done(uid):
-    url = 'http://127.0.0.1:5000/done'
-
-    data = {
-        "UID": uid
-    }
-
-    r = requests.post(url, json=data)
-    r.raise_for_status()
-    app.logger.info(r.json())
-
-
-def get_reference_from_name(name):
-    connection = db.connect()
-    cursor = connection.cursor()
-    cursor.execute("SELECT id FROM reference WHERE name = %s", (name,))
-    reference = cursor.fetchone()
-    connection.close()
-    return reference
-
-
-def get_reference_cmd_data(ref_id):
-    connection = db.connect()
-    cursor = connection.cursor()
-    cursor.execute("SELECT path, genome_count, arm_selection FROM reference WHERE id = %s", (ref_id,))
-    reference = cursor.fetchone()
-    connection.close()
-    return reference
-
-
-def get_query_cmd_data(uid):
-    connection = db.connect()
-    cursor = connection.cursor()
-    cursor.execute("SELECT reference, email FROM query WHERE uid = %s", (uid,))
-    reference = cursor.fetchone()
-    connection.close()
-    return reference
-
-
-@app.route('/about', methods=['GET'])
-def about():
-    references = get_references()
-    return render_template('about.html', references=references)
-
-
-@app.route('/cite', methods=['GET'])
-def cite():
-    return render_template('cite.html')
-
-
-@app.route('/designed_primers', methods=['GET'])
-def designed():
-    return render_template('designed.html')
-
-
-@app.route("/ver")
-def hello_world():
-    import importlib.metadata
-
-    version_string_of_foo = importlib.metadata.version('pmwui')
-    return f"<p>Hello, World! {version_string_of_foo}</p>"
-
-
-def post_process_masks(src, des):
-    src_file = open(src, 'r')
-    des_file = open(des, 'w')
-
-    mask = False
-    skip = False
-
-    for line in src_file:
-        if skip and line.startswith(">"):
-            skip = False
-
-        if mask and line.startswith(">"):
-            skip = True
-            mask = False
-            continue
-
-        if line.startswith(">MASK"):
-            mask = True
-
-        if skip:
-            continue
-
-        des_file.write(line)
-
-    des_file.close()
-    src_file.close()
-
-
-@app.route('/', methods=['GET', 'POST'])
-def index():
-    app.logger.debug('this is a DEBUG message')
-    app.logger.info('this is an INFO message')
-    app.logger.warning('this is a WARNING message')
-    app.logger.error('this is an ERROR message')
-    app.logger.critical('this is a CRITICAL message')
-
-    app.logger.info("kjdkjf")
-
-    if request.method == 'POST':
-        # print(request.form)
-        reference = request.form['reference']
-
-        if "text" in request.form:
-            text = request.form['text']
-        else:
-            text = ''
-
-        filename = ''
-        if 'file' in request.files:
-            file = request.files['query_file']
-
-            if file and file.filename != '':
-                filename = secure_filename(file.filename)
-                file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
-
-        email = request.form['email']
-        uid = uuid.uuid4()
-        reference_id = get_reference_from_name(reference)
-
-        if filename == '' and text != '':
-            filename = f"{uid}.csv"
-            file = open(os.path.join(app.config['UPLOAD_FOLDER'], filename), 'w')
-            file.write(text)
-            file.close()
-
-        submit_query(email, filename, reference, reference_id, text, uid)
-        # return render_template('result.html', id=uid)
-        return redirect(f'snp_file/{uid}')
-
-    references = get_references()
-    return render_template('index.html', references=references)
-
-
-def submit_query(email, filename, reference, reference_id, text, uid):
-    app.logger.info(f"reference: {reference}")
-    app.logger.info(f"reference_id: {reference_id}")
-    app.logger.info(f"text: {text}")
-    app.logger.info(f"filename: {filename}")
-    app.logger.info(f"email: {email}")
-    app.logger.info(f"id: {uid}")
-    db_connection = db.connect()
-    if db_connection is not None:
-        db.insert_query(db_connection, uid, reference_id[0], email, datetime.datetime.now())
-    scheduler.submit(uid)
-    scheduler.poke()
-    app.logger.info("########################################")
-    if email != "":
-        send_massage(email, uid, "New", request.base_url)
-    app.logger.info("result: =S")
-
-
-@app.route('/snp_file/<string:post_id>')
-def show_post(post_id):
-    # show the post with the given id, the id is an integer
-    app.logger.info(post_id)
-
-    query_ref = get_query_cmd_data(post_id)
-
-    app.logger.info("%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%")
-    app.logger.info(query_ref)
-    app.logger.info("%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%")
-
-    if query_ref is None:
-        abort(404)
-
-    status = "init"
-    try:
-        with open(f"{app.static_folder}/data/{post_id}_out/status.txt", 'r') as f:
-            lines = f.read().splitlines()
-            status = lines[-1]
-    except FileNotFoundError:
-        app.logger.info("status file not ready")
-
-    return render_template('res.html', id=post_id, status=status, qcount=scheduler.count())
-
-
-def remove_old():
-    connection = db.connect()
-    cursor = connection.cursor()
-
-    one_hour_ago = datetime.datetime.now() - datetime.timedelta(minutes=1)
-
-    select_query = "SELECT id, uid, date FROM query"
-    cursor.execute(select_query)
-    entries = cursor.fetchall()
-
-    for entry in entries:
-        app.logger.info(entry)
-        app.logger.info(one_hour_ago)
-        app.logger.info(datetime.datetime.fromisoformat(entry[2]))
-        if datetime.datetime.fromisoformat(entry[2]) < one_hour_ago:
-            cursor.execute("DELETE FROM query WHERE id = ?", (entry[0],))
-            app.logger.info("DELETE FROM query WHERE id = ?", (entry[0],))
-            try:
-                shutil.rmtree(f"{app.static_folder}/data/{entry[1]}_out")
-                app.logger.info(f"{app.static_folder}/data/{entry[1]}_out")
-            except FileNotFoundError:
-                app.logger.info("file not found assume it was never created")
-            app.logger.info(f"{cursor.rowcount} rows were deleted.")
-            connection.commit()
-
-    cursor.close()
-    connection.close()
-
-
 @app.post('/gc')
 def gc():
     remove_old()
     return jsonify({"status": "DONE"})
 
 
-def gc_post():
-    url = 'http://127.0.0.1:5000/gc'
-    pm_test_data = {
-
-    }
-    r = requests.post(url, json=pm_test_data)
-    r.raise_for_status()
-    app.logger.info(r.json())
+def server():
+    log.info("polmarker-webui init")
+    scheduler.start()
+    return app
 
 
 def main():
-    app.logger.debug('this is a DEBUG message')
-    app.logger.info('this is an INFO message')
-    app.logger.warning('this is a WARNING message')
-    app.logger.error('this is an ERROR message')
-    app.logger.critical('this is a CRITICAL message')
-
     if len(sys.argv) > 1:
         if sys.argv[1] == "add":
             if len(sys.argv) >= 3:
@@ -476,12 +476,3 @@ def main():
     scheduler.start()
     app.run(debug=True)
     scheduler.stop()
-
-
-def server():
-    gunicorn_logger = logging.getLogger('gunicorn.error')
-    app.logger.handlers = gunicorn_logger.handlers
-    app.logger.setLevel(gunicorn_logger.level)
-
-    scheduler.start()
-    return app
